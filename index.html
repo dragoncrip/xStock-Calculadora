@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airdrop Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: '#0b0f19',
+            card: '#111827',
+            border: '#1f2937',
+            accent: '#6366f1',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background: #0b0f19; }
+    .btn-preset {
+      @apply px-3 py-1.5 rounded-lg text-sm font-medium border border-gray-700 bg-gray-800 hover:bg-gray-700 transition cursor-pointer;
+    }
+    .btn-preset.active {
+      @apply bg-indigo-600 border-indigo-500 text-white;
+    }
+  </style>
+</head>
+<body class="text-gray-100 min-h-screen">
+  <div class="max-w-3xl mx-auto px-4 py-10">
+
+    <!-- Header -->
+    <div class="text-center mb-10">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Airdrop → TGE Estimator</h1>
+      <p class="text-gray-400 mt-2 text-sm">Calcula cuánto valdría tu airdrop según puntos, % de supply y FDV</p>
+      <p class="text-xs text-gray-500 mt-1">Unofficial calculator</p>
+    </div>
+
+    <!-- Global Assumptions -->
+    <div class="bg-card border border-border rounded-2xl p-6 mb-6">
+      <h2 class="text-lg font-semibold mb-4">Global Assumptions</h2>
+
+      <!-- Total Points -->
+      <div class="mb-5">
+        <label class="text-sm text-gray-400 mb-1 block">Puntos totales distribuidos</label>
+        <div class="flex gap-2 items-center">
+          <input id="totalPoints" type="number" value="10" step="0.1"
+                 class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                 oninput="calcular()">
+          <div class="flex bg-gray-900 rounded-xl border border-gray-700 overflow-hidden">
+            <button id="btnB" onclick="setUnit('B')" class="px-4 py-3 text-sm font-medium bg-indigo-600">B</button>
+            <button id="btnM" onclick="setUnit('M')" class="px-4 py-3 text-sm font-medium text-gray-400">M</button>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">Escribe el número (ej: 13.5 = 13.5B puntos)</p>
+      </div>
+
+      <!-- % Airdrop -->
+      <div class="mb-5">
+        <label class="text-sm text-gray-400 mb-2 block">% del Supply destinado al airdrop</label>
+        <div class="flex flex-wrap gap-2 mb-2">
+          <button class="btn-preset" onclick="setPercent(5)">5%</button>
+          <button class="btn-preset" onclick="setPercent(7.5)">7.5%</button>
+          <button class="btn-preset active" onclick="setPercent(10)">10%</button>
+          <button class="btn-preset" onclick="setPercent(15)">15%</button>
+          <button class="btn-preset" onclick="setPercent(20)">20%</button>
+        </div>
+        <input id="percent" type="number" value="10" step="0.1"
+               class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+               oninput="calcular()">
+      </div>
+
+      <!-- FDV -->
+      <div class="mb-5">
+        <label class="text-sm text-gray-400 mb-2 block">FDV (Fully Diluted Valuation)</label>
+        <div class="flex flex-wrap gap-2 mb-2">
+          <button class="btn-preset" onclick="setFDV(100)">$100M</button>
+          <button class="btn-preset" onclick="setFDV(200)">$200M</button>
+          <button class="btn-preset" onclick="setFDV(300)">$300M</button>
+          <button class="btn-preset active" onclick="setFDV(500)">$500M</button>
+          <button class="btn-preset" onclick="setFDV(1000)">$1B</button>
+          <button class="btn-preset" onclick="setFDV(2000)">$2B</button>
+        </div>
+        <input id="fdv" type="number" value="500" step="10"
+               class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+               oninput="calcular()">
+        <p class="text-xs text-gray-500 mt-1">En millones de dólares (ej: 500 = $500M)</p>
+      </div>
+
+      <!-- Info calculada -->
+      <div class="grid grid-cols-3 gap-3 text-center text-sm">
+        <div class="bg-gray-900/50 rounded-xl p-3">
+          <p class="text-gray-400 text-xs">Airdrop Supply</p>
+          <p id="airdropSupply" class="font-medium mt-1">—</p>
+        </div>
+        <div class="bg-gray-900/50 rounded-xl p-3">
+          <p class="text-gray-400 text-xs">Token Price</p>
+          <p id="tokenPrice" class="font-medium mt-1">—</p>
+        </div>
+        <div class="bg-gray-900/50 rounded-xl p-3">
+          <p class="text-gray-400 text-xs">Total Supply*</p>
+          <p class="font-medium mt-1">1B (fijo)</p>
+        </div>
+      </div>
+      <p class="text-xs text-gray-600 mt-2">*Se asume Total Supply = 1,000,000,000 tokens para calcular precio</p>
+    </div>
+
+    <!-- Your Allocation -->
+    <div class="bg-card border border-border rounded-2xl p-6 mb-6">
+      <h2 class="text-lg font-semibold mb-4">Tu Allocation</h2>
+
+      <div class="mb-4">
+        <label class="text-sm text-gray-400 mb-1 block">Tus puntos</label>
+        <div class="flex gap-2">
+          <input id="myPoints" type="number" value="0" step="1"
+                 class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                 oninput="calcular()" placeholder="Ej: 12500">
+          <div class="flex bg-gray-900 rounded-xl border border-gray-700 overflow-hidden">
+            <button id="btnExact" onclick="setMyUnit(false)" class="px-4 py-3 text-sm font-medium bg-indigo-600">Exact</button>
+            <button id="btnMyM" onclick="setMyUnit(true)" class="px-4 py-3 text-sm font-medium text-gray-400">M</button>
+          </div>
+        </div>
+        <p id="myUnitHelp" class="text-xs text-gray-500 mt-1">Escribe el número exacto de puntos</p>
+      </div>
+
+      <!-- Resultado principal -->
+      <div class="bg-gradient-to-br from-indigo-900/40 to-purple-900/20 border border-indigo-500/30 rounded-2xl p-6 text-center mb-5">
+        <p class="text-sm text-gray-400">Estimated Value at TGE</p>
+        <p id="valor" class="text-4xl md:text-5xl font-bold text-indigo-300 mt-1">$0.00</p>
+        <div class="flex justify-center gap-8 mt-4 text-sm">
+          <div>
+            <p class="text-gray-400">Pool share</p>
+            <p id="share" class="font-medium">0.0000%</p>
+          </div>
+          <div>
+            <p class="text-gray-400">Estimated Tokens</p>
+            <p id="tokens" class="font-medium">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de escenarios -->
+    <div class="bg-card border border-border rounded-2xl p-6 overflow-x-auto">
+      <h2 class="text-lg font-semibold mb-4">Escenarios por FDV</h2>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-gray-400 border-b border-gray-700">
+            <th class="text-left py-2">FDV</th>
+            <th class="text-right py-2">Token Price</th>
+            <th class="text-right py-2">Tu Allocation</th>
+            <th class="text-right py-2">Tu Valor</th>
+          </tr>
+        </thead>
+        <tbody id="tabla" class="divide-y divide-gray-800">
+          <!-- se llena con JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    let totalUnit = 'B';      // B = billones, M = millones
+    let myIsMillions = false;
+    const TOTAL_SUPPLY = 1_000_000_000; // asumido
+
+    function setUnit(unit) {
+      totalUnit = unit;
+      document.getElementById('btnB').className = unit === 'B' 
+        ? 'px-4 py-3 text-sm font-medium bg-indigo-600' 
+        : 'px-4 py-3 text-sm font-medium text-gray-400';
+      document.getElementById('btnM').className = unit === 'M' 
+        ? 'px-4 py-3 text-sm font-medium bg-indigo-600' 
+        : 'px-4 py-3 text-sm font-medium text-gray-400';
+      calcular();
+    }
+
+    function setMyUnit(isM) {
+      myIsMillions = isM;
+      document.getElementById('btnExact').className = !isM 
+        ? 'px-4 py-3 text-sm font-medium bg-indigo-600' 
+        : 'px-4 py-3 text-sm font-medium text-gray-400';
+      document.getElementById('btnMyM').className = isM 
+        ? 'px-4 py-3 text-sm font-medium bg-indigo-600' 
+        : 'px-4 py-3 text-sm font-medium text-gray-400';
+      document.getElementById('myUnitHelp').textContent = isM 
+        ? 'Escribe en millones (ej: 1.5 = 1,500,000 puntos)' 
+        : 'Escribe el número exacto de puntos';
+      calcular();
+    }
+
+    function setPercent(val) {
+      document.getElementById('percent').value = val;
+      document.querySelectorAll('.btn-preset').forEach(b => {
+        if (b.textContent.includes('%')) b.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      calcular();
+    }
+
+    function setFDV(val) {
+      document.getElementById('fdv').value = val;
+      document.querySelectorAll('.btn-preset').forEach(b => {
+        if (b.textContent.includes('$')) b.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      calcular();
+    }
+
+    function formatMoney(n) {
+      if (n >= 1_000_000) return '$' + (n / 1_000_000).toFixed(2) + 'M';
+      if (n >= 1_000) return '$' + (n / 1_000).toFixed(1) + 'K';
+      return '$' + n.toFixed(2);
+    }
+
+    function formatNumber(n) {
+      return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n);
+    }
+
+    function calcular() {
+      let totalPoints = parseFloat(document.getElementById('totalPoints').value) || 0;
+      if (totalUnit === 'B') totalPoints *= 1_000_000_000;
+      else totalPoints *= 1_000_000;
+
+      let myPoints = parseFloat(document.getElementById('myPoints').value) || 0;
+      if (myIsMillions) myPoints *= 1_000_000;
+
+      const percent = parseFloat(document.getElementById('percent').value) || 0;
+      const fdvMillions = parseFloat(document.getElementById('fdv').value) || 0;
+      const fdv = fdvMillions * 1_000_000;
+
+      // Cálculos
+      const airdropTokens = (percent / 100) * TOTAL_SUPPLY;
+      const tokenPrice = fdv / TOTAL_SUPPLY;
+      const share = totalPoints > 0 ? myPoints / totalPoints : 0;
+      const myTokens = share * airdropTokens;
+      const myValue = myTokens * tokenPrice;
+
+      // Actualizar UI
+      document.getElementById('airdropSupply').textContent = formatNumber(airdropTokens);
+      document.getElementById('tokenPrice').textContent = '$' + tokenPrice.toFixed(4);
+      document.getElementById('valor').textContent = formatMoney(myValue);
+      document.getElementById('share').textContent = (share * 100).toFixed(4) + '%';
+      document.getElementById('tokens').textContent = formatNumber(myTokens);
+
+      // Tabla de escenarios
+      const scenarios = [100, 200, 300, 500, 1000, 2000, 5000];
+      let html = '';
+      scenarios.forEach(m => {
+        const f = m * 1_000_000;
+        const price = f / TOTAL_SUPPLY;
+        const val = myTokens * price;
+        const isCurrent = m === fdvMillions;
+        html += `
+          <tr class="${isCurrent ? 'bg-indigo-900/20' : ''}">
+            <td class="py-3 font-medium">$${m >= 1000 ? (m/1000)+'B' : m+'M'}</td>
+            <td class="py-3 text-right">$${price.toFixed(4)}</td>
+            <td class="py-3 text-right">${formatNumber(myTokens)}</td>
+            <td class="py-3 text-right font-medium text-indigo-300">${formatMoney(val)}</td>
+          </tr>`;
+      });
+      document.getElementById('tabla').innerHTML = html;
+    }
+
+    // Inicializar
+    calcular();
+  </script>
+</body>
+</html>
