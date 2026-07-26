@@ -284,7 +284,7 @@
         
         if (match && match[1]) {
           const total = parseInt(match[1].replace(/,/g, ''));
-          const enBillones = (total / 1_000_000_000).toFixed(2);
+          const enBillones = (total / 1).toFixed(2);
           
           input.value = enBillones;
           setUnit('B');
