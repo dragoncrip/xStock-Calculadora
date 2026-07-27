@@ -12,8 +12,8 @@
 <body class="text-white min-h-screen p-4 md:p-8">
   <div class="max-w-5xl mx-auto">
 
-    <!-- Título -->
-    <div class="mb-6">
+    <!-- Título centrado -->
+    <div class="mb-8 text-center">
       <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Allocation, estimated.</h1>
       <p class="text-zinc-400 mt-2 text-sm">
         ⭐ <a href="https://defi.xstocks.fi/points" target="_blank" class="text-indigo-400 hover:underline">
@@ -73,9 +73,22 @@
 
         <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 text-center">
           <p class="text-sm text-zinc-400">Estimated Value at TGE</p>
-          <p id="valor" class="text-4xl font-bold text-teal-400 mt-2">$0.00</p>
-          <p class="text-sm text-zinc-400 mt-4">Pool share</p>
-          <p id="share" class="text-lg font-medium">0.0000%</p>
+          <p id="valor" class="text-5xl md:text-6xl font-bold text-teal-400 mt-3">$0.00</p>
+          
+          <div class="mt-6 flex justify-center gap-8 text-sm">
+            <div>
+              <p class="text-zinc-400">Pool share</p>
+              <p id="share" class="font-medium text-base">0.0000%</p>
+            </div>
+            <div>
+              <p class="text-zinc-400">Supply</p>
+              <p id="selectedPercent" class="font-medium text-base">10%</p>
+            </div>
+            <div>
+              <p class="text-zinc-400">FDV</p>
+              <p id="selectedFdv" class="font-medium text-base">$500M</p>
+            </div>
+          </div>
         </div>
 
         <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
@@ -110,6 +123,17 @@
 
       </div>
     </div>
+
+    <!-- Disclaimer + Créditos -->
+    <div class="mt-10 text-center space-y-2">
+      <p class="text-xs text-zinc-500 italic">
+        Esto es una estimación basada en cálculos no oficiales. No constituye consejo financiero ni predicción de valor real.
+      </p>
+      <p class="text-xs text-zinc-600">
+        Created by DragonCrip → X: <a href="https://x.com/DragonCrip" target="_blank" class="text-zinc-400 hover:text-teal-400">@DragonCrip</a>
+      </p>
+    </div>
+
   </div>
 
   <script>
@@ -118,26 +142,24 @@
 
     function setPercent(val, btn) {
       document.getElementById('percent').value = val;
+      document.getElementById('selectedPercent').textContent = val + '%';
 
-      // Quitar estilo activo de todos los botones de %
       document.querySelectorAll('#percentButtons button').forEach(b => {
         b.className = "px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition";
       });
-
-      // Poner estilo activo al seleccionado
       btn.className = "px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold";
       calcular();
     }
 
     function setFDV(val, btn) {
       document.getElementById('fdv').value = val;
+      
+      let label = val >= 1000 ? `$${val/1000}B` : `$${val}M`;
+      document.getElementById('selectedFdv').textContent = label;
 
-      // Quitar estilo activo de todos los botones de FDV
       document.querySelectorAll('#fdvButtons button').forEach(b => {
         b.className = "px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition";
       });
-
-      // Poner estilo activo al seleccionado
       btn.className = "px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold";
       calcular();
     }
