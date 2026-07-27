@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,17 +12,19 @@
 <body class="text-[#e7e9ea] min-h-screen p-4 md:p-8">
   <div class="max-w-5xl mx-auto relative">
 
-    <!-- Logo xStocks arriba a la izquierda -->
+    <!-- Logo xStocks top left -->
     <div class="absolute top-0 left-0 z-10">
-      <img src="logo_xstock.png" alt="Logo xStocks" class="h-10 md:h-12 w-auto object-contain">
+      <img src="logo_xstock.png" alt="xStocks Logo" class="h-10 md:h-12 w-auto object-contain">
     </div>
 
-    <!-- Logo DragonCrip arriba a la derecha (cuadrado pero redondo) -->
+    <!-- Logo DragonCrip top right (clickable) -->
     <div class="absolute top-0 right-0 z-10">
-      <img src="Logo_DC.jpg" alt="Logo DragonCrip" class="h-10 md:h-12 w-10 md:w-12 rounded-full object-cover border border-[#2f3336]">
+      <a href="https://x.com/DragonCrip" target="_blank" rel="noopener noreferrer">
+        <img src="Logo_DC.jpg" alt="DragonCrip Logo" class="h-10 md:h-12 w-10 md:w-12 rounded-full object-cover border border-[#2f3336] hover:opacity-80 transition">
+      </a>
     </div>
 
-    <!-- Título centrado -->
+    <!-- Centered Title -->
     <div class="mb-8 text-center pt-2 px-16 md:px-20">
       <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight text-[#e7e9ea]">
         xStocks Points<br>
@@ -30,20 +32,20 @@
       </h1>
       <p class="text-[#71767b] mt-3 text-sm md:text-base">
         ⭐ <a href="https://defi.xstocks.fi/points?ref=DRAGON" target="_blank" class="text-[#1d9bf0] hover:underline font-medium">
-          Registrate +20% xPoints boost
+          Register for +20% xPoints boost
         </a>
       </p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-      <!-- COLUMNA IZQUIERDA -->
+      <!-- LEFT COLUMN -->
       <div class="bg-[#16181c] border border-[#2f3336] rounded-2xl p-6 space-y-6">
 
         <div>
-          <p class="text-lg font-bold text-[#e7e9ea]">Puntos totales distribuidos hasta la fecha</p>
+          <p class="text-lg font-bold text-[#e7e9ea]">Total points distributed to date</p>
           <p id="totalPointsLabel" class="text-2xl font-bold text-teal-400 mt-1">13.93B</p>
-          <p class="text-xs text-[#71767b] mt-1">Datos obtenidos de xpoints.io</p>
+          <p class="text-xs text-[#71767b] mt-1">Data from xpoints.io</p>
         </div>
 
         <div>
@@ -79,18 +81,18 @@
           <input id="fdv" type="hidden" value="250">
         </div>
 
-        <!-- Boost link debajo de FDV -->
+        <!-- Boost link under FDV -->
         <div class="pt-2">
           <p class="text-sm">
             ⭐ <a href="https://defi.xstocks.fi/points?ref=DRAGON" target="_blank" class="text-[#1d9bf0] hover:underline font-medium">
-              Registrate +20% xPoints boost
+              Register for +20% xPoints boost
             </a>
           </p>
         </div>
 
       </div>
 
-      <!-- COLUMNA DERECHA -->
+      <!-- RIGHT COLUMN -->
       <div class="space-y-5">
 
         <div class="bg-[#16181c] border border-[#2f3336] rounded-2xl p-6 text-center">
@@ -114,7 +116,7 @@
         </div>
 
         <div class="bg-[#16181c] border border-[#2f3336] rounded-2xl p-5">
-          <h3 class="text-sm font-semibold text-[#e7e9ea] mb-4">Escenarios</h3>
+          <h3 class="text-sm font-semibold text-[#e7e9ea] mb-4">Scenarios</h3>
           
           <div class="space-y-3">
             <div class="flex justify-between items-center bg-[#1a0a0a] border border-[#3f1a1a] rounded-xl px-4 py-3">
@@ -146,10 +148,10 @@
       </div>
     </div>
 
-    <!-- Disclaimer + Créditos -->
+    <!-- Disclaimer + Credits -->
     <div class="mt-10 text-center space-y-2">
       <p class="text-xs text-[#71767b] italic">
-        Esto es una estimación basada en cálculos no oficiales. No constituye consejo financiero ni predicción de valor real.
+        This is an estimate based on unofficial calculations. It does not constitute financial advice or a prediction of real value.
       </p>
       <p class="text-xs text-[#71767b]">
         Created by DragonCrip → X: <a href="https://x.com/DragonCrip" target="_blank" class="text-[#71767b] hover:text-teal-400">@DragonCrip</a>
