@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Allocation Estimator</title>
+  <title>xStocks Points Airdrop Calculator</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background: #0a0a0a; }
@@ -12,19 +12,17 @@
 <body class="text-white min-h-screen p-4 md:p-8">
   <div class="max-w-5xl mx-auto relative">
 
-   <!-- Logo arriba a la izquierda -->
-<div class="absolute top-0 left-0 z-10">
-  <img src="logo_xstock.png" alt="Logo" class="h-10 md:h-12 w-auto object-contain">
-</div>
+    <!-- Logo arriba a la izquierda -->
+    <div class="absolute top-0 left-0 z-10">
+      <img src="logo_xstock.png" alt="Logo" class="h-10 md:h-12 w-auto object-contain">
+    </div>
 
     <!-- Título centrado -->
-<div class="mb-8 text-center pt-2 pl-16 md:pl-20">
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Allocation, estimated.</h1>
-      <p class="text-zinc-400 mt-2 text-sm">
-        ⭐ <a href="https://defi.xstocks.fi/points" target="_blank" class="text-indigo-400 hover:underline">
-          Registrate aqui para ganar un +20% xPoints boost
-        </a>
-      </p>
+    <div class="mb-8 text-center pt-2 pl-16 md:pl-20">
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight leading-tight">
+        xStocks Points<br>
+        Airdrop Calculator
+      </h1>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -33,13 +31,13 @@
       <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-6">
 
         <div>
-          <p class="text-sm text-zinc-400">Puntos totales distribuidos</p>
+          <p class="text-base font-semibold text-zinc-300">Puntos totales distribuidos</p>
           <p id="totalPointsLabel" class="text-2xl font-bold text-teal-400 mt-1">13.93B</p>
           <p class="text-xs text-zinc-500 mt-1">Datos obtenidos de xpoints.io</p>
         </div>
 
         <div>
-          <label class="block text-sm text-zinc-400 mb-1.5">Your Points</label>
+          <label class="block text-base font-semibold text-zinc-300 mb-1.5">Your Points</label>
           <input id="myPoints" type="number" value="0" 
                  class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                  oninput="calcular()" placeholder="0">
@@ -47,7 +45,7 @@
 
         <!-- Airdrop pool % -->
         <div>
-          <label class="block text-sm text-zinc-400 mb-2">Airdrop pool %</label>
+          <label class="block text-base font-semibold text-zinc-300 mb-2">Airdrop pool %</label>
           <div class="flex flex-wrap gap-2" id="percentButtons">
             <button onclick="setPercent(5, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">5%</button>
             <button onclick="setPercent(10, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold">10%</button>
@@ -60,17 +58,26 @@
 
         <!-- FDV -->
         <div>
-          <label class="block text-sm text-zinc-400 mb-2">FDV</label>
+          <label class="block text-base font-semibold text-zinc-300 mb-2">FDV</label>
           <div class="flex flex-wrap gap-2" id="fdvButtons">
             <button onclick="setFDV(50, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$50M</button>
             <button onclick="setFDV(100, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$100M</button>
-            <button onclick="setFDV(250, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$250M</button>
-            <button onclick="setFDV(500, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold">$500M</button>
+            <button onclick="setFDV(250, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold">$250M</button>
+            <button onclick="setFDV(500, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$500M</button>
             <button onclick="setFDV(1000, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$1B</button>
-            <button onclick="setFDV(2000, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$2B</button>
           </div>
-          <input id="fdv" type="hidden" value="500">
+          <input id="fdv" type="hidden" value="250">
         </div>
+
+        <!-- Boost link -->
+        <div class="pt-2">
+          <p class="text-sm">
+            ⭐ <a href="https://defi.xstocks.fi/points?ref=DRAGON" target="_blank" class="text-indigo-400 hover:underline font-medium">
+              Registrate +20% xPoints boost
+            </a>
+          </p>
+        </div>
+
       </div>
 
       <!-- COLUMNA DERECHA -->
@@ -91,7 +98,7 @@
             </div>
             <div>
               <p class="text-zinc-400">FDV</p>
-              <p id="selectedFdv" class="font-medium text-base">$500M</p>
+              <p id="selectedFdv" class="font-medium text-base">$250M</p>
             </div>
           </div>
         </div>
