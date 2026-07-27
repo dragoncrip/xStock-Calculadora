@@ -19,10 +19,15 @@
 
     <!-- Título centrado -->
     <div class="mb-8 text-center pt-2 pl-16 md:pl-20">
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight leading-tight">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
         xStocks Points<br>
         Airdrop Calculator
       </h1>
+      <p class="text-zinc-400 mt-3 text-sm md:text-base">
+        ⭐ <a href="https://defi.xstocks.fi/points?ref=DRAGON" target="_blank" class="text-indigo-400 hover:underline font-medium">
+          Registrate +20% xPoints boost
+        </a>
+      </p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -31,13 +36,13 @@
       <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-6">
 
         <div>
-          <p class="text-base font-semibold text-zinc-300">Puntos totales distribuidos</p>
+          <p class="text-lg font-bold text-zinc-300">Puntos totales distribuidos</p>
           <p id="totalPointsLabel" class="text-2xl font-bold text-teal-400 mt-1">13.93B</p>
           <p class="text-xs text-zinc-500 mt-1">Datos obtenidos de xpoints.io</p>
         </div>
 
         <div>
-          <label class="block text-base font-semibold text-zinc-300 mb-1.5">Your Points</label>
+          <label class="block text-lg font-bold text-zinc-300 mb-1.5">Your Points</label>
           <input id="myPoints" type="number" value="0" 
                  class="w-full bg-zinc-950 border border-zinc-700 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                  oninput="calcular()" placeholder="0">
@@ -45,7 +50,7 @@
 
         <!-- Airdrop pool % -->
         <div>
-          <label class="block text-base font-semibold text-zinc-300 mb-2">Airdrop pool %</label>
+          <label class="block text-lg font-bold text-zinc-300 mb-2">Airdrop pool %</label>
           <div class="flex flex-wrap gap-2" id="percentButtons">
             <button onclick="setPercent(5, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">5%</button>
             <button onclick="setPercent(10, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold">10%</button>
@@ -58,7 +63,7 @@
 
         <!-- FDV -->
         <div>
-          <label class="block text-base font-semibold text-zinc-300 mb-2">FDV</label>
+          <label class="block text-lg font-bold text-zinc-300 mb-2">FDV</label>
           <div class="flex flex-wrap gap-2" id="fdvButtons">
             <button onclick="setFDV(50, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$50M</button>
             <button onclick="setFDV(100, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$100M</button>
@@ -69,7 +74,7 @@
           <input id="fdv" type="hidden" value="250">
         </div>
 
-        <!-- Boost link -->
+        <!-- Boost link debajo de FDV -->
         <div class="pt-2">
           <p class="text-sm">
             ⭐ <a href="https://defi.xstocks.fi/points?ref=DRAGON" target="_blank" class="text-indigo-400 hover:underline font-medium">
@@ -142,97 +147,4 @@
         Esto es una estimación basada en cálculos no oficiales. No constituye consejo financiero ni predicción de valor real.
       </p>
       <p class="text-xs text-zinc-600">
-        Created by DragonCrip → X: <a href="https://x.com/DragonCrip" target="_blank" class="text-zinc-400 hover:text-teal-400">@DragonCrip</a>
-      </p>
-    </div>
-
-  </div>
-
-  <script>
-    const TOTAL_SUPPLY = 1_000_000_000;
-    let totalPointsRaw = 13930000000;
-
-    function setPercent(val, btn) {
-      document.getElementById('percent').value = val;
-      document.getElementById('selectedPercent').textContent = val + '%';
-
-      document.querySelectorAll('#percentButtons button').forEach(b => {
-        b.className = "px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition";
-      });
-      btn.className = "px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold";
-      calcular();
-    }
-
-    function setFDV(val, btn) {
-      document.getElementById('fdv').value = val;
-      
-      let label = val >= 1000 ? `$${val/1000}B` : `$${val}M`;
-      document.getElementById('selectedFdv').textContent = label;
-
-      document.querySelectorAll('#fdvButtons button').forEach(b => {
-        b.className = "px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition";
-      });
-      btn.className = "px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold";
-      calcular();
-    }
-
-    function formatMoney(n) {
-      if (n >= 1_000_000) return '$' + (n / 1_000_000).toFixed(2) + 'M';
-      if (n >= 1_000) return '$' + (n / 1_000).toFixed(1) + 'K';
-      return '$' + n.toFixed(2);
-    }
-
-    function calcularEscenario(percent, fdvMillions) {
-      const myPoints = parseFloat(document.getElementById('myPoints').value) || 0;
-      const fdv = fdvMillions * 1_000_000;
-      const airdropTokens = (percent / 100) * TOTAL_SUPPLY;
-      const tokenPrice = fdv / TOTAL_SUPPLY;
-      const share = totalPointsRaw > 0 ? myPoints / totalPointsRaw : 0;
-      return share * airdropTokens * tokenPrice;
-    }
-
-    function calcular() {
-      const myPoints = parseFloat(document.getElementById('myPoints').value) || 0;
-      const percent = parseFloat(document.getElementById('percent').value) || 0;
-      const fdvMillions = parseFloat(document.getElementById('fdv').value) || 0;
-      const fdv = fdvMillions * 1_000_000;
-
-      const airdropTokens = (percent / 100) * TOTAL_SUPPLY;
-      const tokenPrice = fdv / TOTAL_SUPPLY;
-      const share = totalPointsRaw > 0 ? myPoints / totalPointsRaw : 0;
-      const myValue = share * airdropTokens * tokenPrice;
-
-      document.getElementById('valor').textContent = formatMoney(myValue);
-      document.getElementById('share').textContent = (share * 100).toFixed(4) + '%';
-
-      document.getElementById('fudValue').textContent = formatMoney(calcularEscenario(5, 100));
-      document.getElementById('normalValue').textContent = formatMoney(calcularEscenario(10, 500));
-      document.getElementById('fomoValue').textContent = formatMoney(calcularEscenario(20, 1000));
-    }
-
-    async function actualizarPuntos() {
-      try {
-        const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://xpoints.io/'));
-        const html = await response.text();
-        const match = html.match(/Total points[\s\S]{0,80}?([\d,]+)/i);
-        
-        if (match && match[1]) {
-          totalPointsRaw = parseInt(match[1].replace(/,/g, ''));
-          const label = document.getElementById('totalPointsLabel');
-          
-          if (totalPointsRaw >= 1_000_000_000) {
-            label.textContent = (totalPointsRaw / 1_000_000_000).toFixed(2) + 'B';
-          } else {
-            label.textContent = (totalPointsRaw / 1_000_000).toFixed(1) + 'M';
-          }
-          calcular();
-        }
-      } catch (e) {}
-    }
-
-    actualizarPuntos();
-    setInterval(actualizarPuntos, 60 * 60 * 1000);
-    calcular();
-  </script>
-</body>
-</html>
+        Created by DragonCrip → X:
