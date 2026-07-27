@@ -7,15 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { background: #0a0a0a; }
-    
-    .btn-preset {
-      @apply px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 
-             hover:bg-zinc-800 transition-all cursor-pointer;
-    }
-    
-    .btn-preset.active {
-      @apply bg-teal-400 border-teal-400 text-black font-semibold shadow-lg shadow-teal-500/20;
-    }
   </style>
 </head>
 <body class="text-white min-h-screen p-4 md:p-8">
@@ -49,27 +40,29 @@
                  oninput="calcular()" placeholder="0">
         </div>
 
+        <!-- Airdrop pool % -->
         <div>
           <label class="block text-sm text-zinc-400 mb-2">Airdrop pool %</label>
-          <div class="flex flex-wrap gap-2">
-            <button class="btn-preset" onclick="setPercent(5, this)">5%</button>
-            <button class="btn-preset active" onclick="setPercent(10, this)">10%</button>
-            <button class="btn-preset" onclick="setPercent(15, this)">15%</button>
-            <button class="btn-preset" onclick="setPercent(20, this)">20%</button>
-            <button class="btn-preset" onclick="setPercent(25, this)">25%</button>
+          <div class="flex flex-wrap gap-2" id="percentButtons">
+            <button onclick="setPercent(5, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">5%</button>
+            <button onclick="setPercent(10, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold">10%</button>
+            <button onclick="setPercent(15, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">15%</button>
+            <button onclick="setPercent(20, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">20%</button>
+            <button onclick="setPercent(25, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">25%</button>
           </div>
           <input id="percent" type="hidden" value="10">
         </div>
 
+        <!-- FDV -->
         <div>
           <label class="block text-sm text-zinc-400 mb-2">FDV</label>
-          <div class="flex flex-wrap gap-2">
-            <button class="btn-preset" onclick="setFDV(50, this)">$50M</button>
-            <button class="btn-preset" onclick="setFDV(100, this)">$100M</button>
-            <button class="btn-preset" onclick="setFDV(250, this)">$250M</button>
-            <button class="btn-preset active" onclick="setFDV(500, this)">$500M</button>
-            <button class="btn-preset" onclick="setFDV(1000, this)">$1B</button>
-            <button class="btn-preset" onclick="setFDV(2000, this)">$2B</button>
+          <div class="flex flex-wrap gap-2" id="fdvButtons">
+            <button onclick="setFDV(50, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$50M</button>
+            <button onclick="setFDV(100, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$100M</button>
+            <button onclick="setFDV(250, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$250M</button>
+            <button onclick="setFDV(500, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold">$500M</button>
+            <button onclick="setFDV(1000, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$1B</button>
+            <button onclick="setFDV(2000, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition">$2B</button>
           </div>
           <input id="fdv" type="hidden" value="500">
         </div>
@@ -125,19 +118,27 @@
 
     function setPercent(val, btn) {
       document.getElementById('percent').value = val;
-      document.querySelectorAll('.btn-preset').forEach(b => {
-        if (b.textContent.includes('%')) b.classList.remove('active');
+
+      // Quitar estilo activo de todos los botones de %
+      document.querySelectorAll('#percentButtons button').forEach(b => {
+        b.className = "px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition";
       });
-      btn.classList.add('active');
+
+      // Poner estilo activo al seleccionado
+      btn.className = "px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold";
       calcular();
     }
 
     function setFDV(val, btn) {
       document.getElementById('fdv').value = val;
-      document.querySelectorAll('.btn-preset').forEach(b => {
-        if (b.textContent.includes('$')) b.classList.remove('active');
+
+      // Quitar estilo activo de todos los botones de FDV
+      document.querySelectorAll('#fdvButtons button').forEach(b => {
+        b.className = "px-4 py-2 rounded-full text-sm font-medium border border-zinc-700 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 transition";
       });
-      btn.classList.add('active');
+
+      // Poner estilo activo al seleccionado
+      btn.className = "px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold";
       calcular();
     }
 
