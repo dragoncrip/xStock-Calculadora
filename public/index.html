@@ -227,7 +227,7 @@
     const response = await fetch('/api/total-points');
     const data = await response.json();
 
-    console.log('Respuesta completa de la API:', data); // ← esto nos va a ayudar mucho
+    console.log('Respuesta de la API:', data);
 
     if (data.total && data.total > 10_000_000_000) {
       totalPointsRaw = data.total;
@@ -238,7 +238,7 @@
       console.log('✅ Total points actualizado a:', totalPointsRaw.toLocaleString());
       calcular();
     } else {
-      console.warn('Respuesta inválida de la API:', data);
+      console.warn('Respuesta inválida:', data);
     }
   } catch (e) {
     console.error('❌ Error actualizando puntos:', e);
