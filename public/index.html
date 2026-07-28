@@ -1,254 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>xStocks Points Airdrop Calculator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background: #000000; }
-  </style>
-</head>
-<body class="text-[#e7e9ea] min-h-screen p-4 md:p-8">
-  <div class="max-w-5xl mx-auto relative">
-
-    <!-- Logo xStocks top left -->
-    <div class="absolute top-0 left-0 z-10">
-      <img src="logo_xstock.png" alt="xStocks Logo" class="h-10 md:h-12 w-auto object-contain">
-    </div>
-
-    <!-- Logo DragonCrip top right (clickable) -->
-    <div class="absolute top-0 right-0 z-10">
-      <a href="https://x.com/DragonCrip" target="_blank" rel="noopener noreferrer">
-        <img src="Logo_DC.jpg" alt="DragonCrip Logo" class="h-10 md:h-12 w-10 md:w-12 rounded-full object-cover border border-[#2f3336] hover:opacity-80 transition">
-      </a>
-    </div>
-
-    <!-- Centered Title -->
-    <div class="mb-8 text-center pt-2 px-16 md:px-20">
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight text-[#e7e9ea]">
-        xStocks Points<br>
-        Airdrop Calculator
-      </h1>
-      <p class="text-[#71767b] mt-3 text-sm md:text-base">
-        ⭐ <a href="https://defi.xstocks.fi/points?ref=DRAGON" target="_blank" class="text-[#1d9bf0] hover:underline font-medium">
-          Register for +20% xPoints boost
-        </a>
-      </p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <!-- LEFT COLUMN -->
-      <div class="bg-[#16181c] border border-[#2f3336] rounded-2xl p-6 space-y-6">
-
-        <div>
-          <p class="text-lg font-bold text-[#e7e9ea]">Total points distributed to date</p>
-          <p id="totalPointsLabel" class="text-2xl font-bold text-teal-400 mt-1"></p>
-          <p class="text-xs text-[#71767b] mt-1">Data from xpoints.io</p>
-        </div>
-
-        <div>
-          <label class="block text-lg font-bold text-[#e7e9ea] mb-1.5">Your Points</label>
-          <input id="myPoints" type="number" value="0" 
-                 class="w-full bg-black border border-[#2f3336] rounded-xl px-4 py-3 text-lg text-[#e7e9ea] focus:outline-none focus:ring-2 focus:ring-teal-500 placeholder:text-[#71767b]"
-                 oninput="calcular()" placeholder="0">
-        </div>
-
-        <!-- Airdrop pool % -->
-        <div>
-          <label class="block text-lg font-bold text-[#e7e9ea] mb-2">Airdrop pool %</label>
-          <div class="flex flex-wrap gap-2" id="percentButtons">
-            <button onclick="setPercent(5, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition">5%</button>
-            <button onclick="setPercent(10, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold">10%</button>
-            <button onclick="setPercent(15, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition">15%</button>
-            <button onclick="setPercent(20, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition">20%</button>
-            <button onclick="setPercent(25, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition">25%</button>
-          </div>
-          <input id="percent" type="hidden" value="10">
-        </div>
-
-        <!-- FDV -->
-        <div>
-          <label class="block text-lg font-bold text-[#e7e9ea] mb-2">FDV</label>
-          <div class="flex flex-wrap gap-2" id="fdvButtons">
-            <button onclick="setFDV(50, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition">$50M</button>
-            <button onclick="setFDV(100, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition">$100M</button>
-            <button onclick="setFDV(250, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold">$250M</button>
-            <button onclick="setFDV(500, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition">$500M</button>
-            <button onclick="setFDV(1000, this)" class="px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition">$1B</button>
-          </div>
-          <input id="fdv" type="hidden" value="250">
-        </div>
-
-        <!-- Boost link under FDV -->
-        <div class="pt-2">
-          <p class="text-sm">
-            ⭐ <a href="https://defi.xstocks.fi/points?ref=DRAGON" target="_blank" class="text-[#1d9bf0] hover:underline font-medium">
-              Register for +20% xPoints boost
-            </a>
-          </p>
-        </div>
-
-      </div>
-
-      <!-- RIGHT COLUMN -->
-      <div class="space-y-5">
-
-        <div class="bg-[#16181c] border border-[#2f3336] rounded-2xl p-6 text-center">
-          <p class="text-sm text-[#71767b]">Estimated Value at TGE</p>
-          <p id="valor" class="text-5xl md:text-6xl font-bold text-teal-400 mt-3">$0.00</p>
-          
-          <div class="mt-6 flex justify-center gap-8 text-sm">
-            <div>
-              <p class="text-[#71767b]">Pool share</p>
-              <p id="share" class="font-medium text-base text-[#e7e9ea]">0.0000%</p>
-            </div>
-            <div>
-              <p class="text-[#71767b]">Supply</p>
-              <p id="selectedPercent" class="font-medium text-base text-[#e7e9ea]">10%</p>
-            </div>
-            <div>
-              <p class="text-[#71767b]">FDV</p>
-              <p id="selectedFdv" class="font-medium text-base text-[#e7e9ea]">$250M</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-[#16181c] border border-[#2f3336] rounded-2xl p-5">
-          <h3 class="text-sm font-semibold text-[#e7e9ea] mb-4">Scenarios</h3>
-          
-          <div class="space-y-3">
-            <div class="flex justify-between items-center bg-[#1a0a0a] border border-[#3f1a1a] rounded-xl px-4 py-3">
-              <div>
-                <p class="font-medium text-red-400">FUD</p>
-                <p class="text-xs text-[#71767b]">5% supply · $100M FDV</p>
-              </div>
-              <p id="fudValue" class="text-lg font-bold text-red-300">$0</p>
-            </div>
-
-            <div class="flex justify-between items-center bg-[#1a1a0a] border border-[#3f3f1a] rounded-xl px-4 py-3">
-              <div>
-                <p class="font-medium text-yellow-400">NORMAL</p>
-                <p class="text-xs text-[#71767b]">10% supply · $500M FDV</p>
-              </div>
-              <p id="normalValue" class="text-lg font-bold text-yellow-300">$0</p>
-            </div>
-
-            <div class="flex justify-between items-center bg-[#0a1a0a] border border-[#1a3f1a] rounded-xl px-4 py-3">
-              <div>
-                <p class="font-medium text-green-400">FOMO</p>
-                <p class="text-xs text-[#71767b]">20% supply · $1B FDV</p>
-              </div>
-              <p id="fomoValue" class="text-lg font-bold text-green-300">$0</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Disclaimer + Credits -->
-    <div class="mt-10 text-center space-y-2">
-      <p class="text-xs text-[#71767b] italic">
-        This is an estimate based on unofficial calculations. It does not constitute financial advice or a prediction of real value.
-      </p>
-      <p class="text-xs text-[#71767b]">
-        Created by DragonCrip → X: <a href="https://x.com/DragonCrip" target="_blank" class="text-[#71767b] hover:text-teal-400">@DragonCrip</a>
-      </p>
-    </div>
-
-  </div>
-
-  <script>
-    const TOTAL_SUPPLY = 1_000_000_000;
-    let totalPointsRaw = 14256000000; // valor aproximado actual
-
-    function setPercent(val, btn) {
-      document.getElementById('percent').value = val;
-      document.getElementById('selectedPercent').textContent = val + '%';
-
-      document.querySelectorAll('#percentButtons button').forEach(b => {
-        b.className = "px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition";
-      });
-      btn.className = "px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold";
-      calcular();
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    function setFDV(val, btn) {
-      document.getElementById('fdv').value = val;
-      
-      let label = val >= 1000 ? `$${val/1000}B` : `$${val}M`;
-      document.getElementById('selectedFdv').textContent = label;
-
-      document.querySelectorAll('#fdvButtons button').forEach(b => {
-        b.className = "px-4 py-2 rounded-full text-sm font-medium border border-[#2f3336] bg-[#16181c] text-[#e7e9ea] hover:bg-[#1d1f23] transition";
-      });
-      btn.className = "px-4 py-2 rounded-full text-sm font-medium border border-teal-400 bg-teal-400 text-black font-semibold";
-      calcular();
+    body {
+      background: #0a0a0a;
+      color: #e5e5e5;
+      min-height: 100vh;
+      padding: 30px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
     }
 
-    function formatMoney(n) {
-      if (n >= 1_000_000) return '$' + (n / 1_000_000).toFixed(2) + 'M';
-      if (n >= 1_000) return '$' + (n / 1_000).toFixed(1) + 'K';
-      return '$' + n.toFixed(2);
+    .container {
+      max-width: 1100px;
+      width: 100%;
     }
 
-    function calcularEscenario(percent, fdvMillions) {
-      const myPoints = parseFloat(document.getElementById('myPoints').value) || 0;
-      const fdv = fdvMillions * 1_000_000;
-      const airdropTokens = (percent / 100) * TOTAL_SUPPLY;
-      const tokenPrice = fdv / TOTAL_SUPPLY;
-      const share = totalPointsRaw > 0 ? myPoints / totalPointsRaw : 0;
-      return share * airdropTokens * tokenPrice;
+    /* Header con logos */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
     }
 
-    function calcular() {
-      const myPoints = parseFloat(document.getElementById('myPoints').value) || 0;
-      const percent = parseFloat(document.getElementById('percent').value) || 0;
-      const fdvMillions = parseFloat(document.getElementById('fdv').value) || 0;
-      const fdv = fdvMillions * 1_000_000;
-
-      const airdropTokens = (percent / 100) * TOTAL_SUPPLY;
-      const tokenPrice = fdv / TOTAL_SUPPLY;
-      const share = totalPointsRaw > 0 ? myPoints / totalPointsRaw : 0;
-      const myValue = share * airdropTokens * tokenPrice;
-
-      document.getElementById('valor').textContent = formatMoney(myValue);
-      document.getElementById('share').textContent = (share * 100).toFixed(4) + '%';
-
-      document.getElementById('fudValue').textContent = formatMoney(calcularEscenario(5, 100));
-      document.getElementById('normalValue').textContent = formatMoney(calcularEscenario(10, 500));
-      document.getElementById('fomoValue').textContent = formatMoney(calcularEscenario(20, 1000));
+    .logo-xstock {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
     }
 
-    async function actualizarPuntos() {
-  try {
-    const response = await fetch('/api/total-points');
-    const data = await response.json();
-
-    console.log('Respuesta de la API:', data);
-
-    if (data.total && data.total > 10_000_000_000) {
-      totalPointsRaw = data.total;
-
-      const label = document.getElementById('totalPointsLabel');
-      label.textContent = (totalPointsRaw / 1_000_000_000).toFixed(2) + 'B';
-
-      console.log('✅ Total points actualizado a:', totalPointsRaw.toLocaleString());
-      calcular();
-    } else {
-      console.warn('Respuesta inválida:', data);
+    .logo-dc {
+      height: 42px;
+      width: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #333;
+      transition: opacity 0.2s;
     }
-  } catch (e) {
-    console.error('❌ Error actualizando puntos:', e);
-  }
-}
 
-    // Ejecutar al cargar + cada 1 hora
-    actualizarPuntos();
-    setInterval(actualizarPuntos, 60 * 60 * 1000);
-    calcular();
-  </script>
-</body>
-</html>
+    .logo-dc:hover {
+      opacity: 0.8;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .register-boost {
+      text-align: center;
+      margin-bottom: 32px;
+      font-size: 15px;
+    }
+
+    .register-boost a {
+      color: #2dd4bf;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .register-boost a:hover {
+      text-decoration: underline;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 800px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 32px;
+      }
+      .logo-xstock {
+        height: 34px;
+      }
+      .logo-dc {
+        height: 34px;
+        width: 34px;
+      }
+    }
+
+    .card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #aaa;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: #e5e5e5;
+      margin-bottom: 8px;
+    }
+
+    .fixed-points {
+      font-size: 26px;
+      font-weight: 700;
+      color: #2dd4bf;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .points-source {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 22px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.2s;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"]:focus {
+      border-color: #2dd4bf;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background: #1f1f1f;
+      border: 1px solid #333;
+      color: #ccc;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+
+    .btn:hover {
+      background: #2a2a2a;
+    }
+
+    .btn.active {
+      background: #2dd4bf;
+      color: #000;
+      border-color: #2dd4bf;
+      font-weight: 600;
+    }
+
+    /* Resultados principales */
+    .main-result {
+      background: #0f0f0f;
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .main-result-label {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .main-result-value {
+      font-size: 42px;
+      font-weight: 700;
+      color: #2dd4bf;
+      margin-bottom: 20px;
+    }
+
+    .details {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .detail-item {
+      text-align: center;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .detail-value.highlight {
