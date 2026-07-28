@@ -223,25 +223,27 @@
     }
 
     async function actualizarPuntos() {
-      try {
-        const response = await fetch('/api/total-points');
-        const data = await response.json();
+  try {
+    const response = await fetch('/api/total-points');
+    const data = await response.json();
 
-        if (data.total && data.total > 10_000_000_000) {
-          totalPointsRaw = data.total;
+    console.log('Respuesta completa de la API:', data); // ← esto nos va a ayudar mucho
 
-          const label = document.getElementById('totalPointsLabel');
-          label.textContent = (totalPointsRaw / 1_000_000_000).toFixed(2) + 'B';
+    if (data.total && data.total > 10_000_000_000) {
+      totalPointsRaw = data.total;
 
-          console.log('✅ Total points actualizado a:', totalPointsRaw.toLocaleString());
-          calcular();
-        } else {
-          console.warn('Respuesta inválida de la API:', data);
-        }
-      } catch (e) {
-        console.error('❌ Error actualizando puntos:', e);
-      }
+      const label = document.getElementById('totalPointsLabel');
+      label.textContent = (totalPointsRaw / 1_000_000_000).toFixed(2) + 'B';
+
+      console.log('✅ Total points actualizado a:', totalPointsRaw.toLocaleString());
+      calcular();
+    } else {
+      console.warn('Respuesta inválida de la API:', data);
     }
+  } catch (e) {
+    console.error('❌ Error actualizando puntos:', e);
+  }
+}
 
     // Ejecutar al cargar + cada 1 hora
     actualizarPuntos();
