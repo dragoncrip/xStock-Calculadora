@@ -236,3 +236,304 @@
     }
 
     .detail-value.highlight {
+      color: #2dd4bf;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    /* Escenarios */
+    .scenarios {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .scenario {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .scenario-name {
+      font-weight: 600;
+      color: #e5e5e5;
+    }
+
+    .scenario-info {
+      font-size: 13px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .scenario-value {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .formula {
+      font-size: 13px;
+      color: #888;
+      margin-top: 28px;
+      line-height: 1.6;
+      background: #1a1a1a;
+      padding: 16px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .formula a {
+      color: #2dd4bf;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .formula a:hover {
+      text-decoration: underline;
+    }
+
+    .farm-text {
+      margin-top: 14px;
+      font-size: 14px;
+      color: #ccc;
+      line-height: 1.5;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    .footer a {
+      color: #2dd4bf;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header con logos -->
+    <div class="header">
+      <img src="logo_xstock.png" alt="xStocks Logo" class="logo-xstock">
+      <a href="https://x.com/DragonCrip" target="_blank" rel="noopener noreferrer">
+        <img src="Logo_DC.jpg" alt="DragonCrip" class="logo-dc">
+      </a>
+    </div>
+
+    <h1>xStocks Points<br>Airdrop Calculator</h1>
+    
+    <p class="register-boost">
+      ⭐ <a href="https://defi.xstocks.fi/points?ref=DRAGON" target="_blank">Register for +20% xPoints boost</a>
+    </p>
+
+    <div class="main">
+      <!-- LEFT: INPUTS -->
+      <div class="card">
+        <div class="card-title">Configuration</div>
+
+        <label>Total points distributed to date</label>
+        <div class="fixed-points" id="totalPointsLabel">14.28B</div>
+        <div class="points-source">Data from xpoints.io · updates hourly</div>
+
+        <label>Your points</label>
+        <input type="text" id="yourPoints" placeholder="0" oninput="formatAndCalculate(this)">
+
+        <label>Airdrop % of supply</label>
+        <div class="btn-group" id="airdropGroup">
+          <button class="btn" onclick="setAirdrop(5, this)">5%</button>
+          <button class="btn active" onclick="setAirdrop(10, this)">10%</button>
+          <button class="btn" onclick="setAirdrop(15, this)">15%</button>
+          <button class="btn" onclick="setAirdrop(20, this)">20%</button>
+          <button class="btn" onclick="setAirdrop(25, this)">25%</button>
+        </div>
+
+        <label>FDV (Fully Diluted Valuation)</label>
+        <div class="btn-group" id="fdvGroup">
+          <button class="btn" onclick="setFDV(50, this)">$50M</button>
+          <button class="btn" onclick="setFDV(100, this)">$100M</button>
+          <button class="btn active" onclick="setFDV(250, this)">$250M</button>
+          <button class="btn" onclick="setFDV(500, this)">$500M</button>
+          <button class="btn" onclick="setFDV(1000, this)">$1B</button>
+        </div>
+
+        <!-- Formula + farm text -->
+        <div class="formula">
+          Point price = (FDV × Airdrop %) ÷ Total points<br>
+          Your value = Your points × Point price
+          
+          <div class="farm-text">
+            Don't have an xStocks account?<br>
+            <a href="https://defi.xstocks.fi/points?ref=DRAGON" target="_blank">Register now for +20% permanent boost</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: RESULTS -->
+      <div class="card">
+        <div class="card-title">Results</div>
+
+        <div class="main-result">
+          <div class="main-result-label">Estimated Airdrop Value</div>
+          <div class="main-result-value" id="yourValue">$0</div>
+
+          <div class="details">
+            <div class="detail-item">
+              <div class="detail-label">Point value</div>
+              <div class="detail-value highlight" id="pointPrice">$0.00</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Selected FDV</div>
+              <div class="detail-value" id="selectedFDV">$250M</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Airdrop %</div>
+              <div class="detail-value" id="selectedAirdrop">10%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-title">Scenarios</div>
+        <div class="scenarios">
+          <div class="scenario">
+            <div>
+              <div class="scenario-name">FUD</div>
+              <div class="scenario-info">5% Airdrop · $100M FDV</div>
+            </div>
+            <div class="scenario-value" id="fudValue">$0</div>
+          </div>
+
+          <div class="scenario">
+            <div>
+              <div class="scenario-name">Normal</div>
+              <div class="scenario-info">10% Airdrop · $500M FDV</div>
+            </div>
+            <div class="scenario-value" id="normalValue">$0</div>
+          </div>
+
+          <div class="scenario">
+            <div>
+              <div class="scenario-name">FOMO</div>
+              <div class="scenario-info">20% Airdrop · $1B FDV</div>
+            </div>
+            <div class="scenario-value" id="fomoValue">$0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      This is an estimate based on unofficial calculations. It does not constitute financial advice or a prediction of real value.<br>
+      Created by DragonCrip → X: <a href="https://x.com/DragonCrip" target="_blank">@DragonCrip</a>
+    </div>
+  </div>
+
+  <script>
+    let airdropPct = 10;
+    let fdv = 250;
+    let totalPointsRaw = 14275000000; // se actualiza desde la API
+
+    function formatNumber(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function formatMoney(num) {
+      if (num >= 1_000_000) return '$' + (num / 1_000_000).toFixed(2) + 'M';
+      if (num >= 1_000) return '$' + (num / 1_000).toFixed(1) + 'K';
+      return '$' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function formatAndCalculate(input) {
+      let value = input.value.replace(/\D/g, '');
+      if (value === '') {
+        input.value = '';
+        calculate();
+        return;
+      }
+      input.value = formatNumber(value);
+      calculate();
+    }
+
+    function setAirdrop(pct, btn) {
+      airdropPct = pct;
+      document.querySelectorAll('#airdropGroup .btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('selectedAirdrop').textContent = pct + '%';
+      calculate();
+    }
+
+    function setFDV(value, btn) {
+      fdv = value;
+      document.querySelectorAll('#fdvGroup .btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      let label = value >= 1000 ? '$1B' : `$${value}M`;
+      document.getElementById('selectedFDV').textContent = label;
+      calculate();
+    }
+
+    function calculate() {
+      const rawPoints = document.getElementById('yourPoints').value.replace(/,/g, '');
+      const yourPoints = parseFloat(rawPoints) || 0;
+
+      const fdvDollars = fdv * 1_000_000;
+      const airdropValue = fdvDollars * (airdropPct / 100);
+      const pointPrice = totalPointsRaw > 0 ? airdropValue / totalPointsRaw : 0;
+      const yourAirdropValue = yourPoints * pointPrice;
+
+      document.getElementById('yourValue').textContent = formatMoney(yourAirdropValue);
+      
+      // Formato inteligente del precio por punto
+      if (pointPrice >= 0.01) {
+        document.getElementById('pointPrice').textContent = '$' + pointPrice.toFixed(4);
+      } else if (pointPrice >= 0.0001) {
+        document.getElementById('pointPrice').textContent = '$' + pointPrice.toFixed(6);
+      } else {
+        document.getElementById('pointPrice').textContent = '$' + pointPrice.toFixed(8);
+      }
+
+      // Escenarios
+      document.getElementById('fudValue').textContent = formatMoney(yourPoints * ((100 * 1_000_000 * 0.05) / totalPointsRaw));
+      document.getElementById('normalValue').textContent = formatMoney(yourPoints * ((500 * 1_000_000 * 0.10) / totalPointsRaw));
+      document.getElementById('fomoValue').textContent = formatMoney(yourPoints * ((1000 * 1_000_000 * 0.20) / totalPointsRaw));
+    }
+
+    async function actualizarPuntos() {
+      try {
+        const response = await fetch('/api/total-points');
+        const data = await response.json();
+
+        console.log('Respuesta de la API:', data);
+
+        if (data.total && data.total > 10_000_000_000) {
+          totalPointsRaw = data.total;
+
+          const label = document.getElementById('totalPointsLabel');
+          label.textContent = (totalPointsRaw / 1_000_000_000).toFixed(2) + 'B';
+
+          console.log('✅ Total points actualizado a:', totalPointsRaw.toLocaleString());
+          calculate();
+        } else {
+          console.warn('Respuesta inválida:', data);
+        }
+      } catch (e) {
+        console.error('❌ Error actualizando puntos:', e);
+      }
+    }
+
+    // Al cargar + cada hora
+    actualizarPuntos();
+    setInterval(actualizarPuntos, 60 * 60 * 1000);
+    calculate();
+  </script>
+</body>
+</html>
