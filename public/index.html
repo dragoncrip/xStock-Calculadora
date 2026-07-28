@@ -27,7 +27,6 @@
       width: 100%;
     }
 
-    /* Header con logos */
     .header {
       display: flex;
       justify-content: space-between;
@@ -105,16 +104,7 @@
       background: #141414;
       border: 1px solid #222;
       border-radius: 16px;
-      padding: 24px;
-    }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #aaa;
-      margin-bottom: 18px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      padding: 28px;
     }
 
     label {
@@ -122,7 +112,7 @@
       font-size: 15px;
       font-weight: 600;
       color: #e5e5e5;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .fixed-points {
@@ -130,13 +120,13 @@
       font-weight: 700;
       color: #2dd4bf;
       margin-bottom: 6px;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
 
     .points-source {
       font-size: 12px;
       color: #666;
-      margin-bottom: 22px;
+      margin-bottom: 28px;
     }
 
     input[type="text"] {
@@ -144,12 +134,12 @@
       background: #1a1a1a;
       border: 1px solid #333;
       border-radius: 10px;
-      padding: 12px 14px;
+      padding: 14px 16px;
       color: #fff;
       font-size: 16px;
       outline: none;
       transition: border 0.2s;
-      margin-bottom: 20px;
+      margin-bottom: 28px;
     }
 
     input[type="text"]:focus {
@@ -159,15 +149,15 @@
     .btn-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
+      gap: 10px;
+      margin-bottom: 28px;
     }
 
     .btn {
       background: #1f1f1f;
       border: 1px solid #333;
       color: #ccc;
-      padding: 8px 14px;
+      padding: 10px 16px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 13px;
@@ -186,28 +176,28 @@
       font-weight: 600;
     }
 
-    /* Resultados principales */
     .main-result {
       background: #0f0f0f;
       border-radius: 16px;
-      padding: 30px 20px;
+      padding: 36px 20px;
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
     .main-result-label {
       font-size: 14px;
       color: #888;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .main-result-value {
-      font-size: 42px;
+      font-size: 52px;
       font-weight: 700;
       color: #2dd4bf;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
     }
 
     .details {
@@ -241,7 +231,6 @@
       font-size: 18px;
     }
 
-    /* Escenarios */
     .scenarios {
       display: flex;
       flex-direction: column;
@@ -276,7 +265,7 @@
     .formula {
       font-size: 13px;
       color: #888;
-      margin-top: 28px;
+      margin-top: 8px;
       line-height: 1.6;
       background: #1a1a1a;
       padding: 16px;
@@ -322,7 +311,6 @@
 <body>
   <div class="container">
 
-    <!-- Header con logos -->
     <div class="header">
       <img src="logo_xstock.png" alt="xStocks Logo" class="logo-xstock">
       <a href="https://x.com/DragonCrip" target="_blank" rel="noopener noreferrer">
@@ -337,12 +325,10 @@
     </p>
 
     <div class="main">
-      <!-- LEFT: INPUTS -->
+      <!-- LEFT -->
       <div class="card">
-        <div class="card-title">Configuration</div>
-
         <label>Total points distributed to date</label>
-        <div class="fixed-points" id="totalPointsLabel">14.28B</div>
+        <div class="fixed-points" id="totalPointsLabel">14,275,314,418</div>
         <div class="points-source">Data from xpoints.io · updates hourly</div>
 
         <label>Your points</label>
@@ -366,7 +352,6 @@
           <button class="btn" onclick="setFDV(1000, this)">$1B</button>
         </div>
 
-        <!-- Formula + farm text -->
         <div class="formula">
           Point price = (FDV × Airdrop %) ÷ Total points<br>
           Your value = Your points × Point price
@@ -378,10 +363,8 @@
         </div>
       </div>
 
-      <!-- RIGHT: RESULTS -->
+      <!-- RIGHT -->
       <div class="card">
-        <div class="card-title">Results</div>
-
         <div class="main-result">
           <div class="main-result-label">Estimated Airdrop Value</div>
           <div class="main-result-value" id="yourValue">$0</div>
@@ -402,7 +385,6 @@
           </div>
         </div>
 
-        <div class="card-title">Scenarios</div>
         <div class="scenarios">
           <div class="scenario">
             <div>
@@ -440,15 +422,14 @@
   <script>
     let airdropPct = 10;
     let fdv = 250;
-    let totalPointsRaw = 14275000000; // se actualiza desde la API
+    let totalPointsRaw = 14275314418;
 
     function formatNumber(num) {
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     function formatMoney(num) {
-      if (num >= 1_000_000) return '$' + (num / 1_000_000).toFixed(2) + 'M';
-      if (num >= 1_000) return '$' + (num / 1_000).toFixed(1) + 'K';
+      // Siempre número completo con separador de miles
       return '$' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
@@ -492,7 +473,6 @@
 
       document.getElementById('yourValue').textContent = formatMoney(yourAirdropValue);
       
-      // Formato inteligente del precio por punto
       if (pointPrice >= 0.01) {
         document.getElementById('pointPrice').textContent = '$' + pointPrice.toFixed(4);
       } else if (pointPrice >= 0.0001) {
@@ -501,7 +481,6 @@
         document.getElementById('pointPrice').textContent = '$' + pointPrice.toFixed(8);
       }
 
-      // Escenarios
       document.getElementById('fudValue').textContent = formatMoney(yourPoints * ((100 * 1_000_000 * 0.05) / totalPointsRaw));
       document.getElementById('normalValue').textContent = formatMoney(yourPoints * ((500 * 1_000_000 * 0.10) / totalPointsRaw));
       document.getElementById('fomoValue').textContent = formatMoney(yourPoints * ((1000 * 1_000_000 * 0.20) / totalPointsRaw));
@@ -512,25 +491,20 @@
         const response = await fetch('/api/total-points');
         const data = await response.json();
 
-        console.log('Respuesta de la API:', data);
-
         if (data.total && data.total > 10_000_000_000) {
           totalPointsRaw = data.total;
 
-          const label = document.getElementById('totalPointsLabel');
-          label.textContent = (totalPointsRaw / 1_000_000_000).toFixed(2) + 'B';
+          // Número completo con separador de miles
+          document.getElementById('totalPointsLabel').textContent = totalPointsRaw.toLocaleString('en-US');
 
           console.log('✅ Total points actualizado a:', totalPointsRaw.toLocaleString());
           calculate();
-        } else {
-          console.warn('Respuesta inválida:', data);
         }
       } catch (e) {
         console.error('❌ Error actualizando puntos:', e);
       }
     }
 
-    // Al cargar + cada hora
     actualizarPuntos();
     setInterval(actualizarPuntos, 60 * 60 * 1000);
     calculate();
