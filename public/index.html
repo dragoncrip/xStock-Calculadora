@@ -446,7 +446,7 @@
       font-size: 16px;
     }
 
-    /* Scenarios */
+    /* Scenarios — same visual language as rank badges */
     .scenarios {
       display: flex;
       flex-direction: column;
@@ -454,9 +454,9 @@
     }
 
     .scenario {
-      background: #161616;
-      border: 1px solid #222;
-      border-radius: 12px;
+      background: rgba(45, 212, 191, 0.06);
+      border: 1px solid rgba(45, 212, 191, 0.22);
+      border-radius: 14px;
       padding: 14px 16px;
       display: flex;
       justify-content: space-between;
@@ -465,8 +465,8 @@
     }
 
     .scenario:hover {
-      border-color: #2a2a2a;
-      background: #181818;
+      border-color: rgba(45, 212, 191, 0.4);
+      background: rgba(45, 212, 191, 0.1);
     }
 
     .scenario-name {
@@ -477,14 +477,14 @@
 
     .scenario-info {
       font-size: 12px;
-      color: #666;
+      color: #6b7280;
       margin-top: 3px;
     }
 
     .scenario-value {
-      font-weight: 700;
-      color: #fff;
-      font-size: 16px;
+      font-weight: 800;
+      color: #2dd4bf;
+      font-size: 17px;
       letter-spacing: -0.3px;
     }
 
@@ -624,7 +624,7 @@
 
         <div class="formula">
           Point price = (FDV × Airdrop %) ÷ Total points<br>
-          Your value = Your points × Point price
+          Your value = Your xPoints × Point price
           
           <div class="farm-text">
             Don't have an xStocks account?<br>
@@ -639,12 +639,12 @@
           <!-- Empty state -->
           <div class="hero-empty" id="heroEmpty">
             Enter a wallet and hit <strong>Lookup</strong><br>
-            to see your points & estimated airdrop
+            to see your xPoints & estimated airdrop
           </div>
 
           <!-- Filled state -->
           <div class="hero-content" id="heroContent">
-            <div class="hero-points-label">Your points</div>
+            <div class="hero-points-label">Your xPoints</div>
             <div class="hero-points-value" id="yourPointsDisplay">0</div>
 
             <div class="hero-divider"></div>
@@ -906,13 +906,13 @@
     function buildShareText() {
       const points = formatNumber(yourPointsRaw);
       const value = document.getElementById('yourValue').textContent;
-      // Keep text shorter so intent URL doesn't break; link goes in &url=
       return (
         'Just checked my xStocks airdrop estimate 🪂\n\n' +
-        'Points: ' + points + '\n' +
+        'xPoints: ' + points + '\n' +
         'Rank: ' + lastRankLabel + ' · ' + lastPercentileLabel + '\n' +
         'Est. value: ' + value + '\n\n' +
-        'Created by @DragonCrip'
+        'Created by @DragonCrip\n' +
+        TOOL_URL
       );
     }
 
@@ -953,7 +953,7 @@
 
     async function generateCardCanvas() {
       const W = 900;
-      const H = 780;
+      const H = 800;
       const canvas = document.createElement('canvas');
       canvas.width = W;
       canvas.height = H;
@@ -970,7 +970,7 @@
       const cardX = pad;
       const cardY = pad;
       const cardW = W - pad * 2;
-      const cardH = H - pad * 2 - 40;
+      const cardH = H - pad * 2 - 56;
 
       // Glow
       const glow = ctx.createRadialGradient(W / 2, 100, 20, W / 2, 140, 420);
@@ -991,29 +991,13 @@
       ctx.stroke();
 
       const cx = W / 2;
-      let y = cardY + 36;
+      let y = cardY + 52;
 
-      // xStocks logo at top
-      if (logo) {
-        const maxLogoW = 220;
-        const scale = maxLogoW / logo.width;
-        const lw = logo.width * scale;
-        const lh = logo.height * scale;
-        ctx.drawImage(logo, cx - lw / 2, y, lw, lh);
-        y += lh + 28;
-      } else {
-        ctx.fillStyle = '#2dd4bf';
-        ctx.font = '800 28px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('xStocks', cx, y + 24);
-        y += 48;
-      }
-
-      // YOUR POINTS
+      // YOUR XPOINTS
       ctx.fillStyle = '#6b7280';
       ctx.font = '600 16px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('YOUR POINTS', cx, y);
+      ctx.fillText('YOUR XPOINTS', cx, y);
       y += 44;
 
       ctx.fillStyle = '#ffffff';
@@ -1097,12 +1081,25 @@
         ctx.font = '700 17px Inter, system-ui, sans-serif';
         ctx.fillText(d.value, dx, y + 24);
       });
+      y += 56;
 
-      // Footer credit
-      ctx.fillStyle = '#555';
+      // xStocks logo at bottom of card (smaller)
+      if (logo) {
+        const maxLogoW = 140;
+        const scale = maxLogoW / logo.width;
+        const lw = logo.width * scale;
+        const lh = logo.height * scale;
+        ctx.drawImage(logo, cx - lw / 2, Math.min(y, cardY + cardH - lh - 24), lw, lh);
+      }
+
+      // Footer credit — two lines, centered
+      ctx.fillStyle = '#666';
       ctx.font = '500 13px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Created by DragonCrip  ·  ' + TOOL_URL, cx, H - 20);
+      ctx.fillText('Created by @DragonCrip', cx, H - 36);
+      ctx.fillStyle = '#555';
+      ctx.font = '500 12px Inter, system-ui, sans-serif';
+      ctx.fillText(TOOL_URL, cx, H - 16);
 
       return canvas;
     }
