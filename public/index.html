@@ -906,12 +906,12 @@
     function buildShareText() {
       const points = formatNumber(yourPointsRaw);
       const value = document.getElementById('yourValue').textContent;
+      // Keep text shorter so intent URL doesn't break; link goes in &url=
       return (
         'Just checked my xStocks airdrop estimate 🪂\n\n' +
         'Points: ' + points + '\n' +
         'Rank: ' + lastRankLabel + ' · ' + lastPercentileLabel + '\n' +
         'Est. value: ' + value + '\n\n' +
-        'Check yours → ' + TOOL_URL + '\n\n' +
         'Created by @DragonCrip'
       );
     }
@@ -927,13 +927,39 @@
       ctx.closePath();
     }
 
-    function generateCardCanvas() {
+    let logoImg = null;
+    let logoLoadPromise = null;
+
+    function loadLogo() {
+      if (logoImg && logoImg.complete) return Promise.resolve(logoImg);
+      if (logoLoadPromise) return logoLoadPromise;
+      logoLoadPromise = new Promise(function(resolve) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function() {
+          logoImg = img;
+          resolve(img);
+        };
+        img.onerror = function() {
+          resolve(null);
+        };
+        img.src = 'logo_xstock.png';
+      });
+      return logoLoadPromise;
+    }
+
+    // Preload logo
+    loadLogo();
+
+    async function generateCardCanvas() {
       const W = 900;
-      const H = 720;
+      const H = 780;
       const canvas = document.createElement('canvas');
       canvas.width = W;
       canvas.height = H;
       const ctx = canvas.getContext('2d');
+
+      const logo = await loadLogo();
 
       // Background
       ctx.fillStyle = '#0a0a0a';
@@ -944,10 +970,10 @@
       const cardX = pad;
       const cardY = pad;
       const cardW = W - pad * 2;
-      const cardH = H - pad * 2 - 36;
+      const cardH = H - pad * 2 - 40;
 
       // Glow
-      const glow = ctx.createRadialGradient(W / 2, 80, 20, W / 2, 120, 420);
+      const glow = ctx.createRadialGradient(W / 2, 100, 20, W / 2, 140, 420);
       glow.addColorStop(0, 'rgba(45,212,191,0.22)');
       glow.addColorStop(1, 'rgba(45,212,191,0)');
       ctx.fillStyle = glow;
@@ -965,19 +991,35 @@
       ctx.stroke();
 
       const cx = W / 2;
-      let y = cardY + 56;
+      let y = cardY + 36;
+
+      // xStocks logo at top
+      if (logo) {
+        const maxLogoW = 220;
+        const scale = maxLogoW / logo.width;
+        const lw = logo.width * scale;
+        const lh = logo.height * scale;
+        ctx.drawImage(logo, cx - lw / 2, y, lw, lh);
+        y += lh + 28;
+      } else {
+        ctx.fillStyle = '#2dd4bf';
+        ctx.font = '800 28px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('xStocks', cx, y + 24);
+        y += 48;
+      }
 
       // YOUR POINTS
       ctx.fillStyle = '#6b7280';
-      ctx.font = '600 18px Inter, system-ui, sans-serif';
+      ctx.font = '600 16px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('YOUR POINTS', cx, y);
-      y += 48;
+      y += 44;
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = '800 56px Inter, system-ui, sans-serif';
+      ctx.font = '800 54px Inter, system-ui, sans-serif';
       ctx.fillText(formatNumber(yourPointsRaw), cx, y);
-      y += 36;
+      y += 34;
 
       // Divider
       const grad = ctx.createLinearGradient(cx - 40, 0, cx + 40, 0);
@@ -986,22 +1028,22 @@
       grad.addColorStop(1, 'transparent');
       ctx.fillStyle = grad;
       ctx.fillRect(cx - 40, y, 80, 3);
-      y += 48;
+      y += 42;
 
       // ESTIMATED VALUE
       ctx.fillStyle = '#6b7280';
-      ctx.font = '600 18px Inter, system-ui, sans-serif';
+      ctx.font = '600 16px Inter, system-ui, sans-serif';
       ctx.fillText('ESTIMATED AIRDROP VALUE', cx, y);
-      y += 62;
+      y += 56;
 
       ctx.fillStyle = '#2dd4bf';
-      ctx.font = '800 72px Inter, system-ui, sans-serif';
+      ctx.font = '800 68px Inter, system-ui, sans-serif';
       ctx.fillText(document.getElementById('yourValue').textContent, cx, y);
-      y += 40;
+      y += 36;
 
       // Rank badges
       const badgeW = 180;
-      const badgeH = 88;
+      const badgeH = 84;
       const gap = 20;
       const badgeY = y;
       const leftX = cx - badgeW - gap / 2;
@@ -1017,18 +1059,18 @@
         ctx.stroke();
 
         ctx.fillStyle = '#6b7280';
-        ctx.font = '600 14px Inter, system-ui, sans-serif';
+        ctx.font = '600 13px Inter, system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(label, x + badgeW / 2, badgeY + 30);
+        ctx.fillText(label, x + badgeW / 2, badgeY + 28);
 
         ctx.fillStyle = '#2dd4bf';
-        ctx.font = '800 28px Inter, system-ui, sans-serif';
-        ctx.fillText(value, x + badgeW / 2, badgeY + 64);
+        ctx.font = '800 26px Inter, system-ui, sans-serif';
+        ctx.fillText(value, x + badgeW / 2, badgeY + 60);
       }
 
       drawBadge(leftX, 'RANK', lastRankLabel);
       drawBadge(rightX, 'PERCENTILE', lastPercentileLabel);
-      y = badgeY + badgeH + 36;
+      y = badgeY + badgeH + 32;
 
       // Details line
       ctx.strokeStyle = 'rgba(255,255,255,0.06)';
@@ -1037,7 +1079,7 @@
       ctx.moveTo(cardX + 60, y);
       ctx.lineTo(cardX + cardW - 60, y);
       ctx.stroke();
-      y += 36;
+      y += 32;
 
       const details = [
         { label: 'POINT VALUE', value: document.getElementById('pointPrice').textContent },
@@ -1048,56 +1090,40 @@
       details.forEach(function(d, i) {
         const dx = cardX + 60 + colW * i + colW / 2;
         ctx.fillStyle = '#555';
-        ctx.font = '600 13px Inter, system-ui, sans-serif';
+        ctx.font = '600 12px Inter, system-ui, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(d.label, dx, y);
         ctx.fillStyle = i === 0 ? '#2dd4bf' : '#e5e5e5';
-        ctx.font = '700 18px Inter, system-ui, sans-serif';
-        ctx.fillText(d.value, dx, y + 26);
+        ctx.font = '700 17px Inter, system-ui, sans-serif';
+        ctx.fillText(d.value, dx, y + 24);
       });
 
       // Footer credit
       ctx.fillStyle = '#555';
-      ctx.font = '500 14px Inter, system-ui, sans-serif';
+      ctx.font = '500 13px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Created by DragonCrip  ·  ' + TOOL_URL, cx, H - 22);
+      ctx.fillText('Created by DragonCrip  ·  ' + TOOL_URL, cx, H - 20);
 
       return canvas;
     }
 
-    function downloadCard() {
+    async function downloadCard() {
       if (!hasWalletData) return;
-      const canvas = generateCardCanvas();
+      const canvas = await generateCardCanvas();
       const link = document.createElement('a');
       link.download = 'xstocks-airdrop-' + formatNumber(yourPointsRaw).replace(/,/g, '') + '.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
     }
 
-    async function shareOnX() {
+    // Same pattern as xpoints.io: open intent immediately on click (no await before open)
+    function shareOnX() {
       if (!hasWalletData) return;
       const text = buildShareText();
-
-      // Try Web Share API with image (mobile)
-      try {
-        const canvas = generateCardCanvas();
-        const blob = await new Promise(function(resolve) {
-          canvas.toBlob(resolve, 'image/png');
-        });
-        if (blob && navigator.canShare) {
-          const file = new File([blob], 'xstocks-airdrop.png', { type: 'image/png' });
-          if (navigator.canShare({ files: [file], text: text })) {
-            await navigator.share({ files: [file], text: text, title: 'xStocks Airdrop' });
-            return;
-          }
-        }
-      } catch (e) {
-        // fall through to intent
-      }
-
-      // Desktop / fallback: open X intent with text (user attaches downloaded image)
-      const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
-      window.open(url, '_blank', 'noopener,noreferrer');
+      const intent =
+        'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) +
+        '&url=' + encodeURIComponent(TOOL_URL);
+      window.open(intent, '_blank', 'noopener');
     }
 
     document.getElementById('walletAddress').addEventListener('input', onWalletInput);
