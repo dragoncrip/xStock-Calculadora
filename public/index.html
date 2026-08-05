@@ -488,6 +488,58 @@
       letter-spacing: -0.3px;
     }
 
+    .share-row {
+      display: none;
+      gap: 10px;
+      margin-top: 14px;
+      margin-bottom: 4px;
+    }
+
+    .share-row.visible {
+      display: flex;
+    }
+
+    .share-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #2a2a2a;
+      background: #1a1a1a;
+      color: #e5e5e5;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .share-btn:hover {
+      border-color: #2dd4bf;
+      color: #2dd4bf;
+      background: #151515;
+    }
+
+    .share-btn.x-btn {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+
+    .share-btn.x-btn:hover {
+      background: #e5e5e5;
+      border-color: #e5e5e5;
+      color: #000;
+    }
+
+    .share-btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
     .footer {
       margin-top: 40px;
       text-align: center;
@@ -628,6 +680,17 @@
           </div>
         </div>
 
+        <div class="share-row" id="shareRow">
+          <button class="share-btn" type="button" onclick="downloadCard()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+            Download image
+          </button>
+          <button class="share-btn x-btn" type="button" onclick="shareOnX()">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Share on X
+          </button>
+        </div>
+
         <div class="scenarios">
           <div class="scenario">
             <div>
@@ -668,6 +731,9 @@
     let totalPointsRaw = 14275314418;
     let yourPointsRaw = 0;
     let hasWalletData = false;
+    let lastRankLabel = '—';
+    let lastPercentileLabel = '—';
+    const TOOL_URL = 'https://xstock-calculadora.vercel.app/';
 
     function formatNumber(num) {
       return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -761,13 +827,15 @@
         yourPointsRaw = data.points || 0;
         hasWalletData = true;
 
+        lastRankLabel = data.rank != null ? '#' + data.rank.toLocaleString('en-US') : '—';
+        lastPercentileLabel = data.percentileLabel || (data.percentile != null ? data.percentile.toFixed(2) + '%' : '—');
+
         document.getElementById('yourPointsDisplay').textContent = formatNumber(yourPointsRaw);
-        document.getElementById('rankValue').textContent =
-          data.rank != null ? '#' + data.rank.toLocaleString('en-US') : '—';
-        document.getElementById('percentileValue').textContent =
-          data.percentileLabel || (data.percentile != null ? data.percentile.toFixed(2) + '%' : '—');
+        document.getElementById('rankValue').textContent = lastRankLabel;
+        document.getElementById('percentileValue').textContent = lastPercentileLabel;
 
         showHero();
+        document.getElementById('shareRow').classList.add('visible');
         calculate();
 
         input.classList.remove('input-error');
@@ -833,6 +901,203 @@
       } catch (e) {
         console.error('Error updating points:', e);
       }
+    }
+
+    function buildShareText() {
+      const points = formatNumber(yourPointsRaw);
+      const value = document.getElementById('yourValue').textContent;
+      return (
+        'Just checked my xStocks airdrop estimate 🪂\n\n' +
+        'Points: ' + points + '\n' +
+        'Rank: ' + lastRankLabel + ' · ' + lastPercentileLabel + '\n' +
+        'Est. value: ' + value + '\n\n' +
+        'Check yours → ' + TOOL_URL + '\n\n' +
+        'Created by @DragonCrip'
+      );
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function generateCardCanvas() {
+      const W = 900;
+      const H = 720;
+      const canvas = document.createElement('canvas');
+      canvas.width = W;
+      canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fillRect(0, 0, W, H);
+
+      // Card
+      const pad = 48;
+      const cardX = pad;
+      const cardY = pad;
+      const cardW = W - pad * 2;
+      const cardH = H - pad * 2 - 36;
+
+      // Glow
+      const glow = ctx.createRadialGradient(W / 2, 80, 20, W / 2, 120, 420);
+      glow.addColorStop(0, 'rgba(45,212,191,0.22)');
+      glow.addColorStop(1, 'rgba(45,212,191,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, W, H * 0.55);
+
+      // Card bg
+      ctx.fillStyle = '#0f0f0f';
+      roundRect(ctx, cardX, cardY, cardW, cardH, 28);
+      ctx.fill();
+
+      // Card border
+      ctx.strokeStyle = 'rgba(45,212,191,0.28)';
+      ctx.lineWidth = 2;
+      roundRect(ctx, cardX, cardY, cardW, cardH, 28);
+      ctx.stroke();
+
+      const cx = W / 2;
+      let y = cardY + 56;
+
+      // YOUR POINTS
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '600 18px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('YOUR POINTS', cx, y);
+      y += 48;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 56px Inter, system-ui, sans-serif';
+      ctx.fillText(formatNumber(yourPointsRaw), cx, y);
+      y += 36;
+
+      // Divider
+      const grad = ctx.createLinearGradient(cx - 40, 0, cx + 40, 0);
+      grad.addColorStop(0, 'transparent');
+      grad.addColorStop(0.5, '#2dd4bf');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fillRect(cx - 40, y, 80, 3);
+      y += 48;
+
+      // ESTIMATED VALUE
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '600 18px Inter, system-ui, sans-serif';
+      ctx.fillText('ESTIMATED AIRDROP VALUE', cx, y);
+      y += 62;
+
+      ctx.fillStyle = '#2dd4bf';
+      ctx.font = '800 72px Inter, system-ui, sans-serif';
+      ctx.fillText(document.getElementById('yourValue').textContent, cx, y);
+      y += 40;
+
+      // Rank badges
+      const badgeW = 180;
+      const badgeH = 88;
+      const gap = 20;
+      const badgeY = y;
+      const leftX = cx - badgeW - gap / 2;
+      const rightX = cx + gap / 2;
+
+      function drawBadge(x, label, value) {
+        ctx.fillStyle = 'rgba(45,212,191,0.08)';
+        roundRect(ctx, x, badgeY, badgeW, badgeH, 16);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(45,212,191,0.28)';
+        ctx.lineWidth = 1.5;
+        roundRect(ctx, x, badgeY, badgeW, badgeH, 16);
+        ctx.stroke();
+
+        ctx.fillStyle = '#6b7280';
+        ctx.font = '600 14px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, x + badgeW / 2, badgeY + 30);
+
+        ctx.fillStyle = '#2dd4bf';
+        ctx.font = '800 28px Inter, system-ui, sans-serif';
+        ctx.fillText(value, x + badgeW / 2, badgeY + 64);
+      }
+
+      drawBadge(leftX, 'RANK', lastRankLabel);
+      drawBadge(rightX, 'PERCENTILE', lastPercentileLabel);
+      y = badgeY + badgeH + 36;
+
+      // Details line
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(cardX + 60, y);
+      ctx.lineTo(cardX + cardW - 60, y);
+      ctx.stroke();
+      y += 36;
+
+      const details = [
+        { label: 'POINT VALUE', value: document.getElementById('pointPrice').textContent },
+        { label: 'SELECTED FDV', value: document.getElementById('selectedFDV').textContent },
+        { label: 'AIRDROP %', value: document.getElementById('selectedAirdrop').textContent }
+      ];
+      const colW = (cardW - 120) / 3;
+      details.forEach(function(d, i) {
+        const dx = cardX + 60 + colW * i + colW / 2;
+        ctx.fillStyle = '#555';
+        ctx.font = '600 13px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(d.label, dx, y);
+        ctx.fillStyle = i === 0 ? '#2dd4bf' : '#e5e5e5';
+        ctx.font = '700 18px Inter, system-ui, sans-serif';
+        ctx.fillText(d.value, dx, y + 26);
+      });
+
+      // Footer credit
+      ctx.fillStyle = '#555';
+      ctx.font = '500 14px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Created by DragonCrip  ·  ' + TOOL_URL, cx, H - 22);
+
+      return canvas;
+    }
+
+    function downloadCard() {
+      if (!hasWalletData) return;
+      const canvas = generateCardCanvas();
+      const link = document.createElement('a');
+      link.download = 'xstocks-airdrop-' + formatNumber(yourPointsRaw).replace(/,/g, '') + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    async function shareOnX() {
+      if (!hasWalletData) return;
+      const text = buildShareText();
+
+      // Try Web Share API with image (mobile)
+      try {
+        const canvas = generateCardCanvas();
+        const blob = await new Promise(function(resolve) {
+          canvas.toBlob(resolve, 'image/png');
+        });
+        if (blob && navigator.canShare) {
+          const file = new File([blob], 'xstocks-airdrop.png', { type: 'image/png' });
+          if (navigator.canShare({ files: [file], text: text })) {
+            await navigator.share({ files: [file], text: text, title: 'xStocks Airdrop' });
+            return;
+          }
+        }
+      } catch (e) {
+        // fall through to intent
+      }
+
+      // Desktop / fallback: open X intent with text (user attaches downloaded image)
+      const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
 
     document.getElementById('walletAddress').addEventListener('input', onWalletInput);
