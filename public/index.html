@@ -80,8 +80,9 @@
 
     .main {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.15fr;
       gap: 24px;
+      align-items: start;
     }
 
     @media (max-width: 800px) {
@@ -97,6 +98,12 @@
       .logo-dc {
         height: 34px;
         width: 34px;
+      }
+      .hero-value {
+        font-size: 42px !important;
+      }
+      .hero-points-value {
+        font-size: 28px !important;
       }
     }
 
@@ -158,7 +165,7 @@
     .field-hint {
       font-size: 12px;
       color: #666;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       min-height: 18px;
     }
 
@@ -237,148 +244,6 @@
       font-weight: 600;
     }
 
-    /* ── Right panel ── */
-    .main-result {
-      background: linear-gradient(180deg, #0f0f0f 0%, #121212 100%);
-      border: 1px solid #1e1e1e;
-      border-radius: 16px;
-      padding: 32px 20px 28px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .main-result-label {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-    }
-
-    .main-result-value {
-      font-size: 52px;
-      font-weight: 700;
-      color: #2dd4bf;
-      margin-bottom: 20px;
-      letter-spacing: -0.5px;
-      line-height: 1.1;
-    }
-
-    /* Rank + Percentile badges (right side, next to result) */
-    .rank-badges {
-      display: none;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 22px;
-    }
-
-    .rank-badges.visible {
-      display: flex;
-    }
-
-    .rank-badge {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 12px 20px;
-      min-width: 120px;
-      text-align: center;
-      transition: border-color 0.2s;
-    }
-
-    .rank-badge:hover {
-      border-color: #2dd4bf;
-    }
-
-    .rank-badge .rb-label {
-      font-size: 11px;
-      color: #777;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-
-    .rank-badge .rb-value {
-      font-size: 20px;
-      font-weight: 700;
-      color: #2dd4bf;
-      letter-spacing: -0.3px;
-    }
-
-    .details {
-      display: flex;
-      justify-content: center;
-      gap: 36px;
-      flex-wrap: wrap;
-      font-size: 14px;
-      color: #aaa;
-      padding-top: 4px;
-    }
-
-    .detail-item {
-      text-align: center;
-    }
-
-    .detail-label {
-      font-size: 11px;
-      color: #666;
-      margin-bottom: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    .detail-value {
-      font-size: 15px;
-      color: #fff;
-      font-weight: 500;
-    }
-
-    .detail-value.highlight {
-      color: #2dd4bf;
-      font-weight: 600;
-      font-size: 17px;
-    }
-
-    .scenarios {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .scenario {
-      background: #1a1a1a;
-      border: 1px solid #222;
-      border-radius: 12px;
-      padding: 14px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: border-color 0.15s;
-    }
-
-    .scenario:hover {
-      border-color: #333;
-    }
-
-    .scenario-name {
-      font-weight: 600;
-      color: #e5e5e5;
-      font-size: 14px;
-    }
-
-    .scenario-info {
-      font-size: 12px;
-      color: #777;
-      margin-top: 3px;
-    }
-
-    .scenario-value {
-      font-weight: 600;
-      color: #fff;
-      font-size: 15px;
-    }
-
     .formula {
       font-size: 13px;
       color: #888;
@@ -406,6 +271,221 @@
       font-size: 14px;
       color: #ccc;
       line-height: 1.5;
+    }
+
+    /* ════════════ HERO RESULT PANEL ════════════ */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(45, 212, 191, 0.18), transparent 55%),
+        linear-gradient(165deg, #101010 0%, #0c0c0c 50%, #0a0a0a 100%);
+      border: 1px solid #1f2a28;
+      border-radius: 20px;
+      padding: 36px 24px 28px;
+      text-align: center;
+      margin-bottom: 18px;
+      box-shadow:
+        0 0 0 1px rgba(45, 212, 191, 0.06),
+        0 20px 50px -20px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 1px;
+      background: linear-gradient(160deg, rgba(45, 212, 191, 0.35), transparent 40%, transparent 60%, rgba(45, 212, 191, 0.12));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .hero-empty {
+      padding: 48px 20px;
+      color: #555;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .hero-empty strong {
+      color: #888;
+      font-weight: 600;
+    }
+
+    .hero-content {
+      display: none;
+    }
+
+    .hero-content.visible {
+      display: block;
+      animation: fadeUp 0.35s ease-out;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-points-label {
+      font-size: 12px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .hero-points-value {
+      font-size: 34px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      margin-bottom: 22px;
+      line-height: 1.15;
+      text-shadow: 0 0 40px rgba(45, 212, 191, 0.15);
+    }
+
+    .hero-divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #2dd4bf, transparent);
+      margin: 0 auto 22px;
+      border-radius: 2px;
+    }
+
+    .hero-value-label {
+      font-size: 12px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .hero-value {
+      font-size: 56px;
+      font-weight: 800;
+      color: #2dd4bf;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      margin-bottom: 24px;
+      text-shadow: 0 0 60px rgba(45, 212, 191, 0.35);
+    }
+
+    .rank-badges {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .rank-badge {
+      background: rgba(45, 212, 191, 0.06);
+      border: 1px solid rgba(45, 212, 191, 0.22);
+      border-radius: 14px;
+      padding: 14px 22px;
+      min-width: 130px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .rank-badge .rb-label {
+      font-size: 11px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .rank-badge .rb-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #2dd4bf;
+      letter-spacing: -0.4px;
+    }
+
+    .details {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      margin-top: 4px;
+      padding-top: 20px;
+    }
+
+    .detail-item {
+      text-align: center;
+    }
+
+    .detail-label {
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      font-weight: 600;
+    }
+
+    .detail-value {
+      font-size: 15px;
+      color: #e5e5e5;
+      font-weight: 600;
+    }
+
+    .detail-value.highlight {
+      color: #2dd4bf;
+      font-size: 16px;
+    }
+
+    /* Scenarios */
+    .scenarios {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .scenario {
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .scenario:hover {
+      border-color: #2a2a2a;
+      background: #181818;
+    }
+
+    .scenario-name {
+      font-weight: 700;
+      color: #e5e5e5;
+      font-size: 14px;
+    }
+
+    .scenario-info {
+      font-size: 12px;
+      color: #666;
+      margin-top: 3px;
+    }
+
+    .scenario-value {
+      font-weight: 700;
+      color: #fff;
+      font-size: 16px;
+      letter-spacing: -0.3px;
     }
 
     .footer {
@@ -472,10 +552,6 @@
         </div>
         <div class="field-hint" id="walletHint">EVM, Solana, Tron or TON address</div>
 
-        <label>Your points</label>
-        <input type="text" id="yourPoints" placeholder="0" oninput="formatAndCalculate(this)">
-        <div class="field-hint" id="pointsHint">Enter manually or lookup by wallet</div>
-
         <label>Airdrop % of supply</label>
         <div class="btn-group" id="airdropGroup">
           <button class="btn" onclick="setAirdrop(5, this)">5%</button>
@@ -506,35 +582,48 @@
       </div>
 
       <!-- RIGHT -->
-      <div class="card">
-        <div class="main-result">
-          <div class="main-result-label">Estimated Airdrop Value</div>
-          <div class="main-result-value" id="yourValue">$0</div>
-
-          <!-- Rank + Percentile (appear after wallet lookup) -->
-          <div class="rank-badges" id="rankBadges">
-            <div class="rank-badge">
-              <div class="rb-label">Rank</div>
-              <div class="rb-value" id="rankValue">—</div>
-            </div>
-            <div class="rank-badge">
-              <div class="rb-label">Percentile</div>
-              <div class="rb-value" id="percentileValue">—</div>
-            </div>
+      <div class="card" style="padding: 20px;">
+        <div class="hero" id="hero">
+          <!-- Empty state -->
+          <div class="hero-empty" id="heroEmpty">
+            Enter a wallet and hit <strong>Lookup</strong><br>
+            to see your points & estimated airdrop
           </div>
 
-          <div class="details">
-            <div class="detail-item">
-              <div class="detail-label">Point value</div>
-              <div class="detail-value highlight" id="pointPrice">$0.00</div>
+          <!-- Filled state -->
+          <div class="hero-content" id="heroContent">
+            <div class="hero-points-label">Your points</div>
+            <div class="hero-points-value" id="yourPointsDisplay">0</div>
+
+            <div class="hero-divider"></div>
+
+            <div class="hero-value-label">Estimated Airdrop Value</div>
+            <div class="hero-value" id="yourValue">$0</div>
+
+            <div class="rank-badges" id="rankBadges">
+              <div class="rank-badge">
+                <div class="rb-label">Rank</div>
+                <div class="rb-value" id="rankValue">—</div>
+              </div>
+              <div class="rank-badge">
+                <div class="rb-label">Percentile</div>
+                <div class="rb-value" id="percentileValue">—</div>
+              </div>
             </div>
-            <div class="detail-item">
-              <div class="detail-label">Selected FDV</div>
-              <div class="detail-value" id="selectedFDV">$250M</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">Airdrop %</div>
-              <div class="detail-value" id="selectedAirdrop">10%</div>
+
+            <div class="details">
+              <div class="detail-item">
+                <div class="detail-label">Point value</div>
+                <div class="detail-value highlight" id="pointPrice">$0.00</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Selected FDV</div>
+                <div class="detail-value" id="selectedFDV">$250M</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Airdrop %</div>
+                <div class="detail-value" id="selectedAirdrop">10%</div>
+              </div>
             </div>
           </div>
         </div>
@@ -577,9 +666,11 @@
     let airdropPct = 10;
     let fdv = 250;
     let totalPointsRaw = 14275314418;
+    let yourPointsRaw = 0;
+    let hasWalletData = false;
 
     function formatNumber(num) {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     function formatMoney(num) {
@@ -611,10 +702,9 @@
       el.className = 'field-hint' + (type ? ' ' + type : '');
     }
 
-    function setPointsHint(msg, type) {
-      const el = document.getElementById('pointsHint');
-      el.textContent = msg;
-      el.className = 'field-hint' + (type ? ' ' + type : '');
+    function showHero() {
+      document.getElementById('heroEmpty').style.display = 'none';
+      document.getElementById('heroContent').classList.add('visible');
     }
 
     function onWalletInput() {
@@ -657,7 +747,6 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span>Looking up…';
       setWalletHint('Fetching points & rank…');
-      document.getElementById('rankBadges').classList.remove('visible');
 
       try {
         const res = await fetch('/api/wallet?address=' + encodeURIComponent(address));
@@ -666,23 +755,24 @@
         if (!res.ok) {
           input.classList.add('input-error');
           setWalletHint(data.error || 'Wallet not found', 'error');
-          setPointsHint('Enter points manually', 'error');
           return;
         }
 
-        document.getElementById('yourPoints').value = formatNumber(data.points);
-        calculate();
+        yourPointsRaw = data.points || 0;
+        hasWalletData = true;
 
+        document.getElementById('yourPointsDisplay').textContent = formatNumber(yourPointsRaw);
         document.getElementById('rankValue').textContent =
           data.rank != null ? '#' + data.rank.toLocaleString('en-US') : '—';
         document.getElementById('percentileValue').textContent =
           data.percentileLabel || (data.percentile != null ? data.percentile.toFixed(2) + '%' : '—');
-        document.getElementById('rankBadges').classList.add('visible');
+
+        showHero();
+        calculate();
 
         input.classList.remove('input-error');
         input.classList.add('input-ok');
         setWalletHint('Wallet found', 'ok');
-        setPointsHint('Loaded from wallet · you can still edit manually', 'ok');
       } catch (e) {
         console.error(e);
         input.classList.add('input-error');
@@ -691,17 +781,6 @@
         btn.disabled = false;
         btn.textContent = 'Lookup';
       }
-    }
-
-    function formatAndCalculate(input) {
-      let value = input.value.replace(/\D/g, '');
-      if (value === '') {
-        input.value = '';
-        calculate();
-        return;
-      }
-      input.value = formatNumber(value);
-      calculate();
     }
 
     function setAirdrop(pct, btn) {
@@ -721,16 +800,14 @@
     }
 
     function calculate() {
-      const rawPoints = document.getElementById('yourPoints').value.replace(/,/g, '');
-      const yourPoints = parseFloat(rawPoints) || 0;
-
+      const yourPoints = yourPointsRaw || 0;
       const fdvDollars = fdv * 1_000_000;
       const airdropValue = fdvDollars * (airdropPct / 100);
       const pointPrice = totalPointsRaw > 0 ? airdropValue / totalPointsRaw : 0;
       const yourAirdropValue = yourPoints * pointPrice;
 
       document.getElementById('yourValue').textContent = formatMoney(yourAirdropValue);
-      
+
       if (pointPrice >= 0.01) {
         document.getElementById('pointPrice').textContent = '$' + pointPrice.toFixed(4);
       } else if (pointPrice >= 0.0001) {
