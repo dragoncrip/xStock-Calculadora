@@ -139,104 +139,11 @@
       font-size: 16px;
       outline: none;
       transition: border 0.2s;
-      margin-bottom: 8px;
+      margin-bottom: 28px;
     }
 
     input[type="text"]:focus {
       border-color: #2dd4bf;
-    }
-
-    input[type="text"].input-error {
-      border-color: #ef4444;
-    }
-
-    input[type="text"].input-ok {
-      border-color: #2dd4bf;
-    }
-
-    .field-hint {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 20px;
-      min-height: 18px;
-    }
-
-    .field-hint.error {
-      color: #ef4444;
-    }
-
-    .field-hint.ok {
-      color: #2dd4bf;
-    }
-
-    .wallet-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-
-    .wallet-row input {
-      flex: 1;
-      margin-bottom: 0;
-    }
-
-    .btn-lookup {
-      background: #2dd4bf;
-      border: none;
-      color: #000;
-      padding: 0 18px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      white-space: nowrap;
-      transition: opacity 0.15s;
-    }
-
-    .btn-lookup:hover {
-      opacity: 0.9;
-    }
-
-    .btn-lookup:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .rank-box {
-      background: #0f0f0f;
-      border: 1px solid #222;
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 24px;
-      display: none;
-    }
-
-    .rank-box.visible {
-      display: block;
-    }
-
-    .rank-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px 28px;
-    }
-
-    .rank-item .rank-label {
-      font-size: 11px;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-bottom: 4px;
-    }
-
-    .rank-item .rank-value {
-      font-size: 16px;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .rank-item .rank-value.accent {
-      color: #2dd4bf;
     }
 
     .btn-group {
@@ -399,22 +306,6 @@
     .footer a:hover {
       text-decoration: underline;
     }
-
-    .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(0,0,0,0.2);
-      border-top-color: #000;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
@@ -440,37 +331,8 @@
         <div class="fixed-points" id="totalPointsLabel">14,275,314,418</div>
         <div class="points-source">Data from xpoints.io · updates hourly</div>
 
-        <label>Wallet address</label>
-        <div class="wallet-row">
-          <input type="text" id="walletAddress" placeholder="0x… / Solana / Tron / TON" autocomplete="off" spellcheck="false">
-          <button class="btn-lookup" id="btnLookup" onclick="lookupWallet()">Lookup</button>
-        </div>
-        <div class="field-hint" id="walletHint">EVM, Solana, Tron or TON address</div>
-
-        <div class="rank-box" id="rankBox">
-          <div class="rank-grid">
-            <div class="rank-item">
-              <div class="rank-label">Rank</div>
-              <div class="rank-value accent" id="rankValue">—</div>
-            </div>
-            <div class="rank-item">
-              <div class="rank-label">Percentile</div>
-              <div class="rank-value accent" id="percentileValue">—</div>
-            </div>
-            <div class="rank-item">
-              <div class="rank-label">Registered wallets</div>
-              <div class="rank-value" id="registeredValue">—</div>
-            </div>
-            <div class="rank-item">
-              <div class="rank-label">Network</div>
-              <div class="rank-value" id="networkValue">—</div>
-            </div>
-          </div>
-        </div>
-
         <label>Your points</label>
         <input type="text" id="yourPoints" placeholder="0" oninput="formatAndCalculate(this)">
-        <div class="field-hint" id="pointsHint">Enter manually or lookup by wallet</div>
 
         <label>Airdrop % of supply</label>
         <div class="btn-group" id="airdropGroup">
@@ -567,129 +429,8 @@
     }
 
     function formatMoney(num) {
+      // Siempre número completo con separador de miles
       return '$' + Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    // ── Address validation (client-side, mirrors API) ──────────────
-    function isValidAddress(addr) {
-      if (!addr || typeof addr !== 'string') return false;
-      const a = addr.trim();
-
-      // EVM
-      if (/^0x[a-fA-F0-9]{40}$/.test(a)) return true;
-      // Tron
-      if (/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(a)) return true;
-      // TON
-      if (/^(EQ|UQ|kQ|0Q)[A-Za-z0-9_-]{46}$/.test(a)) return true;
-      // Solana / generic base58
-      if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(a)) return true;
-
-      return false;
-    }
-
-    function detectNetwork(addr) {
-      const a = addr.trim();
-      if (/^0x[a-fA-F0-9]{40}$/.test(a)) return 'EVM';
-      if (/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(a)) return 'Tron';
-      if (/^(EQ|UQ|kQ|0Q)[A-Za-z0-9_-]{46}$/.test(a)) return 'TON';
-      if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(a)) return 'Solana';
-      return null;
-    }
-
-    function setWalletHint(msg, type) {
-      const el = document.getElementById('walletHint');
-      el.textContent = msg;
-      el.className = 'field-hint' + (type ? ' ' + type : '');
-    }
-
-    function setPointsHint(msg, type) {
-      const el = document.getElementById('pointsHint');
-      el.textContent = msg;
-      el.className = 'field-hint' + (type ? ' ' + type : '');
-    }
-
-    function onWalletInput() {
-      const input = document.getElementById('walletAddress');
-      const raw = input.value.trim();
-      input.classList.remove('input-error', 'input-ok');
-
-      if (!raw) {
-        setWalletHint('EVM, Solana, Tron or TON address');
-        return;
-      }
-
-      if (isValidAddress(raw)) {
-        input.classList.add('input-ok');
-        const net = detectNetwork(raw);
-        setWalletHint('Valid ' + net + ' address · press Lookup or Enter', 'ok');
-      } else {
-        input.classList.add('input-error');
-        setWalletHint('Invalid address format', 'error');
-      }
-    }
-
-    async function lookupWallet() {
-      const input = document.getElementById('walletAddress');
-      const btn = document.getElementById('btnLookup');
-      const address = input.value.trim();
-
-      if (!address) {
-        input.classList.add('input-error');
-        setWalletHint('Enter a wallet address', 'error');
-        input.focus();
-        return;
-      }
-
-      if (!isValidAddress(address)) {
-        input.classList.add('input-error');
-        setWalletHint('Invalid address format', 'error');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span>Looking up…';
-      setWalletHint('Fetching points & rank…');
-      document.getElementById('rankBox').classList.remove('visible');
-
-      try {
-        const res = await fetch('/api/wallet?address=' + encodeURIComponent(address));
-        const data = await res.json();
-
-        if (!res.ok) {
-          input.classList.add('input-error');
-          setWalletHint(data.error || 'Wallet not found', 'error');
-          setPointsHint('Enter points manually', 'error');
-          return;
-        }
-
-        // Fill points
-        const pointsInput = document.getElementById('yourPoints');
-        pointsInput.value = formatNumber(data.points);
-        calculate();
-
-        // Rank box
-        document.getElementById('rankValue').textContent =
-          data.rank != null ? '#' + data.rank.toLocaleString('en-US') : '—';
-        document.getElementById('percentileValue').textContent =
-          data.percentileLabel || (data.percentile != null ? data.percentile.toFixed(2) + '%' : '—');
-        document.getElementById('registeredValue').textContent =
-          data.registered != null ? data.registered.toLocaleString('en-US') : '—';
-        document.getElementById('networkValue').textContent =
-          data.walletType || detectNetwork(address) || '—';
-        document.getElementById('rankBox').classList.add('visible');
-
-        input.classList.remove('input-error');
-        input.classList.add('input-ok');
-        setWalletHint('Wallet found', 'ok');
-        setPointsHint('Loaded from wallet · you can still edit manually', 'ok');
-      } catch (e) {
-        console.error(e);
-        input.classList.add('input-error');
-        setWalletHint('Network error · try again', 'error');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Lookup';
-      }
     }
 
     function formatAndCalculate(input) {
@@ -716,7 +457,7 @@
       document.querySelectorAll('#fdvGroup .btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      let label = value >= 1000 ? '$1B' : '$' + value + 'M';
+      let label = value >= 1000 ? '$1B' : `$${value}M`;
       document.getElementById('selectedFDV').textContent = label;
       calculate();
     }
@@ -752,7 +493,10 @@
 
         if (data.total && data.total > 10_000_000_000) {
           totalPointsRaw = data.total;
+
+          // Número completo con separador de miles
           document.getElementById('totalPointsLabel').textContent = totalPointsRaw.toLocaleString('en-US');
+
           console.log('✅ Total points actualizado a:', totalPointsRaw.toLocaleString());
           calculate();
         }
@@ -760,15 +504,6 @@
         console.error('❌ Error actualizando puntos:', e);
       }
     }
-
-    // Events
-    document.getElementById('walletAddress').addEventListener('input', onWalletInput);
-    document.getElementById('walletAddress').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        lookupWallet();
-      }
-    });
 
     actualizarPuntos();
     setInterval(actualizarPuntos, 60 * 60 * 1000);
