@@ -906,12 +906,12 @@
     function buildShareText() {
       const points = formatNumber(yourPointsRaw);
       const value = document.getElementById('yourValue').textContent;
-      // Link only via &url= — no "Created by" in the tweet text
       return (
         'Just checked my xStocks airdrop estimate 🪂\n\n' +
         'xPoints: ' + points + '\n' +
         'Rank: ' + lastRankLabel + ' · ' + lastPercentileLabel + '\n' +
-        'Est. value: ' + value
+        'Est. value: ' + value + '\n\n' +
+        'Check yours → ' + TOOL_URL
       );
     }
 
@@ -977,8 +977,8 @@
       const badgeH = 72;
       const yLine = badgeY + badgeH + 18;
       const yDetails = yLine + 24;
-      const yLogo = yDetails + 36;
-      const bottomPad = 22;
+      const yLogo = yDetails + 52;
+      const bottomPad = 24;
       const cardBottom = yLogo + logoH + bottomPad;
       const cardH = cardBottom - cardY;
       const footerH = 44;
@@ -1116,12 +1116,12 @@
     }
 
     // Same pattern as xpoints.io: open intent immediately on click (no await before open)
+    // URL goes inside the text (with line breaks) — no &url= to avoid it sticking to the last line
     function shareOnX() {
       if (!hasWalletData) return;
       const text = buildShareText();
       const intent =
-        'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) +
-        '&url=' + encodeURIComponent(TOOL_URL);
+        'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
       window.open(intent, '_blank', 'noopener');
     }
 
